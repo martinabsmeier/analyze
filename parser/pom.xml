@@ -27,7 +27,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- dependency version -->
-        <antlr.version>4.10.1</antlr.version>
+        <antlr.version>4.11.1</antlr.version>
 
         <!-- plugin versions -->
         <antlr.plugin.version>4.10.1</antlr.plugin.version>
