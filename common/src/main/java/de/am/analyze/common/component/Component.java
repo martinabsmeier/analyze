@@ -25,15 +25,12 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static de.am.analyze.common.AnalyzeConstants.DEFAULT_DELIMITER;
 import static de.am.analyze.common.component.type.ComponentType.APP_ROOT;
 import static de.am.analyze.common.component.type.ComponentType.LIB_ROOT;
 import static de.am.analyze.common.component.type.ComponentType.ROOT;
-import static java.util.Objects.hash;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
@@ -293,25 +290,6 @@ public class Component implements Serializable {
 
         return type.equals(getType());
     }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (isNull(other) || getClass() != other.getClass()) {
-            return false;
-        }
-
-        Component otherComponent = (Component) other;
-        return Objects.equals(otherComponent.getUniqueCoordinate(), getUniqueCoordinate());
-    }
-
-    @Override
-    public int hashCode() {
-        return hash(getUniqueCoordinate());
-    }
-
 
     /**
      * Get the unique coordinate of this {@link Component}.
