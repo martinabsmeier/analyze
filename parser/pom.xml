@@ -81,15 +81,12 @@
                 <version>${antlr.plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>antlr-generate</id>
-                        <phase>generate-sources</phase>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <libDirectory>src/main/antlr4</libDirectory>
                     <listener>true</listener>
                     <visitor>true</visitor>
                 </configuration>

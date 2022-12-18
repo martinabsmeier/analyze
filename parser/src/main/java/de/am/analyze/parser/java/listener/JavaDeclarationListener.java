@@ -16,8 +16,8 @@
 package de.am.analyze.parser.java.listener;
 
 import de.am.analyze.common.component.Component;
-import de.am.analyze.generated.parsers.java.JavaParserBaseListener;
 import de.am.analyze.parser.common.ListenerBase;
+import de.am.analyze.parser.generated.java.JavaParserBaseListener;
 
 public class JavaDeclarationListener extends JavaParserBaseListener implements ListenerBase {
 
