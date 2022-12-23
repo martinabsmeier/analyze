@@ -65,7 +65,10 @@ public class JavaSourceParser extends SourceParserBase {
         LOGGER.info(SEPARATOR);
 
         List<SourceParserResult> parserResults = executeParser(files);
-        listeners.forEach(listener -> executeListener(parserResults, listener));
+
+        if (!listeners.isEmpty()) {
+            listeners.forEach(listener -> executeListener(parserResults, listener));
+        }
     }
 
     @Override
@@ -84,14 +87,14 @@ public class JavaSourceParser extends SourceParserBase {
     @Override
     public SourceParserResult tryPredictionMode(File file, PredictionMode mode) throws IOException {
         String fileName = cleanupFileName(file.getAbsolutePath());
+
         JavaParser parser = buildParser(file, mode);
         SourceParserResult parserResult = SourceParserResult.builder()
             .parseTree(parser.compilationUnit())
             .sourceName(fileName)
             .build();
 
-        LOGGER.info("Executed [{}] | Mode [{}] | Duration [{}] | File [{} of {}] -> {}",
-                    this.getClass().getSimpleName(), mode, 0, countFiles, numberOfFiles, fileName);
+        LOGGER.info("Executed [{} with mode {} on file {} of {}] -> {}", this.getClass().getSimpleName(), mode, countFiles, numberOfFiles, fileName);
 
         return parserResult;
     }

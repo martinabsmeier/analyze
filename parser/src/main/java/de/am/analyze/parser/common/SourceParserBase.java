@@ -17,6 +17,7 @@ package de.am.analyze.parser.common;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.common.exception.ParserException;
+import de.am.analyze.common.util.StopWatch;
 import de.am.analyze.parser.SourceParser;
 import de.am.analyze.parser.SourceType;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public abstract class SourceParserBase implements SourceParser {
     protected final ApplicationBase application;
     protected final SourceType sourceType;
     protected final ParseTreeWalker treeWalker;
+    protected final StopWatch sw;
     protected Integer numberOfFiles;
     protected Integer countFiles;
     @Getter
@@ -76,6 +78,7 @@ public abstract class SourceParserBase implements SourceParser {
         this.application = application;
         this.sourceType = sourceType;
         this.treeWalker = ParseTreeWalker.DEFAULT;
+        this.sw = new StopWatch();
         this.listeners = new ArrayList<>();
         this.libraries = new ArrayList<>();
         // First initialize standard listener and libraries
@@ -175,6 +178,10 @@ public abstract class SourceParserBase implements SourceParser {
         countFiles = 1;
         numberOfFiles = files.size();
 
+        if (sw.isStopped()) {
+            sw.start();
+        }
+
         List<SourceParserResult> parserResults = new ArrayList<>(numberOfFiles);
         files.stream()
             .map(this::parseFile)
@@ -184,9 +191,12 @@ public abstract class SourceParserBase implements SourceParser {
                 parserResults.add(parserResult);
             });
 
+
+        sw.stop();
         LOGGER.info(SEPARATOR);
-        LOGGER.info("{} processed {} files.", this.getClass().getSimpleName(), numberOfFiles);
+        LOGGER.info("{} processed {} files in {} ms.", this.getClass().getSimpleName(), files.size(), sw.getTime());
         LOGGER.info(SEPARATOR);
+        sw.reset();
 
         return parserResults;
     }
@@ -199,9 +209,16 @@ public abstract class SourceParserBase implements SourceParser {
      */
     @Synchronized
     protected void executeListener(List<SourceParserResult> parserResults, ListenerBase listener) {
-        String listenerName = listener.getClass().getSimpleName();
         countFiles = 1;
         numberOfFiles = parserResults.size();
+
+        String listenerName = listener.getClass().getSimpleName();
+        LOGGER.info("Execute listener {} on {} files.", listenerName, numberOfFiles);
+        LOGGER.info(SEPARATOR);
+
+        if (sw.isStopped()) {
+            sw.start();
+        }
 
         parserResults.forEach(parserResult -> {
             listener.setSourceName(parserResult.getSourceName());
@@ -209,13 +226,15 @@ public abstract class SourceParserBase implements SourceParser {
             application.mergeWithApplication(listener.getResult());
             listener.reset();
 
-            LOGGER.info("Executed [{}] | File [{} of {}] -> {}", listenerName, countFiles, numberOfFiles, parserResult.getSourceName());
+            LOGGER.info("Executed [{} on file {} of {}] -> {}", listenerName, countFiles, numberOfFiles, parserResult.getSourceName());
             countFiles++;
         });
 
+        sw.stop();
         LOGGER.info(SEPARATOR);
-        LOGGER.info("{} processed {} files.", listenerName, numberOfFiles);
+        LOGGER.info("{} processed {} files in {} ms.", listenerName, numberOfFiles, sw.getTime());
         LOGGER.info(SEPARATOR);
+        sw.reset();
     }
 
     // #################################################################################################################

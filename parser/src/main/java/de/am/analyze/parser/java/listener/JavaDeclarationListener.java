@@ -29,6 +29,7 @@ import de.am.analyze.parser.java.JavaParsingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.am.analyze.common.component.type.ComponentType.JAVA_PACKAGE;
@@ -43,6 +44,11 @@ public class JavaDeclarationListener extends JavaParserBaseListener implements L
     protected JavaApplication application;
     protected JavaParsingContext parsingContext;
     protected String sourceName;
+    /**
+     * Modifiers are now one level above classes or interfaces in the optimized grammar so we collect them
+     * first and then add them to the correct recipient in the level below
+     */
+    private final List<String> collectedModifiers;
 
     /**
      * Creates a new instance of {@code JavaListenerBase} class.
@@ -52,6 +58,7 @@ public class JavaDeclarationListener extends JavaParserBaseListener implements L
     public JavaDeclarationListener(String revisionId) {
         this.application = JavaApplication.getInstance();
         this.parsingContext = JavaParsingContext.builder().revisionId(revisionId).build();
+        this.collectedModifiers = new ArrayList<>();
         initParsingContext();
     }
 
@@ -116,7 +123,7 @@ public class JavaDeclarationListener extends JavaParserBaseListener implements L
     // #################################################################################################################
     @Override
     public Component getResult() {
-        return null;
+        return parsingContext.getComponent();
     }
 
     @Override
@@ -126,7 +133,9 @@ public class JavaDeclarationListener extends JavaParserBaseListener implements L
 
     @Override
     public void reset() {
-
+        parsingContext.reset();
+        initParsingContext();
+        collectedModifiers.clear();
     }
 
     // #################################################################################################################
