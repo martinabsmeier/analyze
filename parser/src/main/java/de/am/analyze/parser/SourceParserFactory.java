@@ -16,7 +16,6 @@
 package de.am.analyze.parser;
 
 import de.am.analyze.common.component.Component;
-import de.am.analyze.common.exception.ParserException;
 import de.am.analyze.parser.common.ListenerBase;
 import de.am.analyze.parser.java.JavaSourceParser;
 
@@ -27,22 +26,20 @@ import java.util.List;
  */
 public class SourceParserFactory {
 
-    public static SourceParser createParser(SourceType sourceType, List<ListenerBase> listeners, List<Component> libraries) {
-        SourceParser parser = findParserByType(sourceType);
-        parser.setListeners(listeners);
-        parser.setLibraries(libraries);
-
-        return parser;
+    /**
+     * Creates a new instance of {@link JavaSourceParser} class.
+     *
+     * @param revisionId revisionId the unique id of the source code
+     * @param listeners  the listeners executed by the parser
+     * @param libraries  the libraries to be initialized before parsing
+     * @return the created instance
+     */
+    public static JavaSourceParser createJavaSourceParser(String revisionId, List<ListenerBase> listeners, List<Component> libraries) {
+        return JavaSourceParser.builder().revisionId(revisionId).listeners(listeners).libraries(libraries).build();
     }
 
     // #################################################################################################################
-    private static SourceParser findParserByType(SourceType sourceType) {
-        switch (sourceType) {
-            case JAVA:
-                return JavaSourceParser.builder().build();
-
-            default:
-                throw new ParserException("Can not find parser for source type: " + sourceType.name());
-        }
+    private SourceParserFactory() {
+        // We do not need an instance.
     }
 }

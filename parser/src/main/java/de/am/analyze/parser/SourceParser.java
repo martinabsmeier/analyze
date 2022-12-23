@@ -47,13 +47,6 @@ public interface SourceParser {
     void parseFiles(List<File> files);
 
     /**
-     * Set the specified {@code listeners}.
-     *
-     * @param listeners the listeners to be set
-     */
-    void setListeners(List<ListenerBase> listeners);
-
-    /**
      * Add the specified {@code listener} if the list does not contain the listener already.
      *
      * @param listener the listener to be added
@@ -64,13 +57,6 @@ public interface SourceParser {
      * Removes all listeners.
      */
     void clearListeners();
-
-    /**
-     * Set the specified {@code libraries}.
-     *
-     * @param libraries the libraries to be set
-     */
-    void setLibraries(List<Component> libraries);
 
     /**
      * Add the specified {@code library} if the list does not contain the library already.
@@ -95,14 +81,14 @@ public interface SourceParser {
     SourceParserResult tryPredictionMode(File file, PredictionMode mode) throws IOException;
 
     /**
-     * Initializes the {@code SourceParser} with the specified {@code libraries}.
-     *
-     * @param libraries the libraries to be initialised
+     * Initializes the parser with standard libraries of the respective programming language,
      */
-    void initLibraries(List<Component> libraries);
+    void initLibraries();
 
     /**
-     * Initializes the {@code SourceParser} with the specified {@code listeners}.
+     * Initializes the parser with standard listeners that are always executed.
+     *
+     * @param revisionId revisionId the unique id of the source code
      */
-    void initListeners();
+    void initListeners(String revisionId);
 }

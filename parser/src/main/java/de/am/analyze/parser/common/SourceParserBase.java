@@ -19,6 +19,7 @@ import de.am.analyze.common.component.Component;
 import de.am.analyze.common.exception.ParserException;
 import de.am.analyze.parser.SourceParser;
 import de.am.analyze.parser.SourceType;
+import lombok.Getter;
 import lombok.Synchronized;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -39,6 +40,7 @@ import static de.am.analyze.common.AnalyzeConstants.USER_HOME_DIR;
 import static de.am.analyze.common.util.FileUtils.findFilesByExtension;
 import static java.io.File.separator;
 import static java.text.MessageFormat.format;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -52,18 +54,23 @@ public abstract class SourceParserBase implements SourceParser {
     protected final ParseTreeWalker treeWalker;
     protected Integer numberOfFiles;
     protected Integer countFiles;
+    @Getter
     protected List<ListenerBase> listeners;
+    @Getter
     protected List<Component> libraries;
-
 
     /**
      * Creates a new instance of {@code SourceParserBase}.
      *
      * @param application the underlying application (e.g. JavaApplication).
+     * @param revisionId  revisionId the unique id of the source code
      * @param sourceType  source code type for which the parser is responsible
+     * @param listeners   the listeners executed by the parser
+     * @param libraries   the libraries to be initialized before parsing
      */
-    protected SourceParserBase(ApplicationBase application, SourceType sourceType) {
+    protected SourceParserBase(ApplicationBase application, String revisionId, SourceType sourceType, List<ListenerBase> listeners, List<Component> libraries) {
         requireNonNull(application, "Parameter 'application' must be not NULL.");
+        requireNonNull(revisionId, "Parameter 'revisionId' must be not NULL.");
         requireNonNull(sourceType, "Parameter 'sourceType' must be not NULL.");
 
         this.application = application;
@@ -71,20 +78,16 @@ public abstract class SourceParserBase implements SourceParser {
         this.treeWalker = ParseTreeWalker.DEFAULT;
         this.listeners = new ArrayList<>();
         this.libraries = new ArrayList<>();
+        // First initialize standard listener and libraries
+        initListeners(revisionId);
+        initLibraries();
+        if (nonNull(listeners)) {
+            this.listeners.addAll(listeners);
+        }
+        if (nonNull(libraries)) {
+            this.libraries.addAll(libraries);
+        }
     }
-
-    // #################################################################################################################
-    @Override
-    public abstract void parseFiles(List<File> files);
-
-    @Override
-    public abstract void initLibraries(List<Component> libraries);
-
-    @Override
-    public abstract void initListeners();
-
-    @Override
-    public abstract SourceParserResult tryPredictionMode(File file, PredictionMode mode) throws IOException;
 
     // #################################################################################################################
 
@@ -107,12 +110,6 @@ public abstract class SourceParserBase implements SourceParser {
     }
 
     @Override
-    public void setListeners(List<ListenerBase> listeners) {
-        requireNonNull(listeners, "Parameter 'listeners' must be not NULL.");
-        this.listeners = listeners;
-    }
-
-    @Override
     public void addListener(ListenerBase listener) {
         requireNonNull(listener, "Parameter 'listener' must be not NULL.");
         if (!this.listeners.contains(listener)) {
@@ -123,12 +120,6 @@ public abstract class SourceParserBase implements SourceParser {
     @Override
     public void clearListeners() {
         this.listeners.clear();
-    }
-
-    @Override
-    public void setLibraries(List<Component> libraries) {
-        requireNonNull(libraries, "Parameter 'libraries' must be not NULL.");
-        this.libraries = libraries;
     }
 
     @Override

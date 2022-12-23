@@ -17,6 +17,7 @@ package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.common.ParsingContextBase;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -24,10 +25,6 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.am.analyze.common.component.type.ComponentType.JAVA_CLASS;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_ENUM;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_INTERFACE;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_PARAMETERIZED_TYPE;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
@@ -50,7 +47,18 @@ public class JavaParsingContext extends ParsingContextBase {
     /**
      * All imports of the current compilation unit / component
      */
-    private List<Component> imports = new ArrayList<>();
+    private List<Component> imports;
+
+    /**
+     * Creates a new instance with the specified {@code revisionId}.
+     *
+     * @param revisionId Unique id of the source code e.g. git commit id
+     */
+    @Builder
+    public JavaParsingContext(String revisionId) {
+        super(revisionId);
+        this.imports = new ArrayList<>();
+    }
 
     /**
      * Add the import component specified by {@code component} to internal list for later lookup.
@@ -106,31 +114,5 @@ public class JavaParsingContext extends ParsingContextBase {
         imports.clear();
         visibleComponents.clear();
         componentsWithVisibleChildren.clear();
-    }
-
-    // #################################################################################################################
-
-    private boolean isClassOrInterfaceOrEnumOrTypeParameter(Component component) {
-        return isClassOrInterfaceOrEnum(component) || isParameteriziedType(component);
-    }
-
-    private boolean isClassOrInterfaceOrEnum(Component component) {
-        return isClass(component) || isInterface(component) || isEnum(component);
-    }
-
-    private boolean isClass(Component component) {
-        return component.isType(JAVA_CLASS);
-    }
-
-    private boolean isInterface(Component component) {
-        return component.isType(JAVA_INTERFACE);
-    }
-
-    private boolean isEnum(Component component) {
-        return component.isType(JAVA_ENUM);
-    }
-
-    private boolean isParameteriziedType(Component component) {
-        return component.isType(JAVA_PARAMETERIZED_TYPE);
     }
 }

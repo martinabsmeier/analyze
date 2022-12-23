@@ -55,7 +55,6 @@ public class ParsingContextBase {
      * Unique id of the source code e.g git commit id, it is used to compare source code.
      */
     private String revisionId;
-
     /**
      * The currently observable components. (e.g. Classes, interfaces and enumerations etc.)
      */
@@ -65,6 +64,10 @@ public class ParsingContextBase {
      * <b>java</b>, <b>java.lang</b>, and <b>java.io</b>.
      */
     protected List<Component> componentsWithVisibleChildren = new ArrayList<>();
+
+    public ParsingContextBase(String revisionId) {
+        this.revisionId = revisionId;
+    }
 
     public List<ComponentWrapper> findVisibleComponentsByValue(String value) {
         return visibleComponents.stream()
