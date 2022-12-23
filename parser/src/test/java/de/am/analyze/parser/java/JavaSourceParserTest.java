@@ -18,7 +18,7 @@ package de.am.analyze.parser.java;
 import de.am.analyze.common.AnalyzeConstants;
 import de.am.analyze.parser.SourceParserFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
 
@@ -48,8 +48,8 @@ class JavaSourceParserTest {
         dirToParse = new File(path);
     }
 
-    @Test
-    void test() {
+    @Disabled
+    void parseDirectory() {
         JavaSourceParser parser = SourceParserFactory.createJavaSourceParser("JavaSourceParserTest", null, null);
         parser.parseDirectory(dirToParse);
     }
