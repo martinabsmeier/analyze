@@ -121,7 +121,7 @@ public class JavaDeclarationListener extends JavaParserBaseListener implements L
 
     @Override
     public void setSourceName(String sourceName) {
-
+        this.sourceName = sourceName;
     }
 
     @Override
