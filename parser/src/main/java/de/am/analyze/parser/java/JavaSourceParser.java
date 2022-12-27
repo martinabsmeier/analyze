@@ -23,7 +23,7 @@ import de.am.analyze.parser.common.SourceParserResult;
 import de.am.analyze.parser.common.SyntaxErrorListener;
 import de.am.analyze.parser.generated.java.JavaLexer;
 import de.am.analyze.parser.generated.java.JavaParser;
-import de.am.analyze.parser.java.listener.JavaDeclarationListener;
+import de.am.analyze.parser.java.listener.JavaStructureListener;
 import lombok.Builder;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStreams;
@@ -81,7 +81,7 @@ public class JavaSourceParser extends SourceParserBase {
 
     @Override
     public void initListeners(String revisionId) {
-        addListener(new JavaDeclarationListener(revisionId));
+        addListener(new JavaStructureListener(revisionId));
     }
 
     @Override
