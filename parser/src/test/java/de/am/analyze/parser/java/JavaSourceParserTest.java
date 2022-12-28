@@ -49,7 +49,7 @@ class JavaSourceParserTest {
         dirToParse = new File(path);
     }
 
-    @Test
+    @Disabled
     void parseDirectory() {
         JavaSourceParser parser = SourceParserFactory.createJavaSourceParser("JavaSourceParserTest", null, null);
         parser.parseDirectory(dirToParse);

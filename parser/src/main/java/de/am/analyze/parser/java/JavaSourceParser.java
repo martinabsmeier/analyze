@@ -17,6 +17,7 @@ package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.SourceType;
+import de.am.analyze.parser.common.ApplicationBase;
 import de.am.analyze.parser.common.ListenerBase;
 import de.am.analyze.parser.common.SourceParserBase;
 import de.am.analyze.parser.common.SourceParserResult;

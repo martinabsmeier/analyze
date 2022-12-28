@@ -16,6 +16,7 @@
 package de.am.analyze.parser.common;
 
 import de.am.analyze.common.component.Component;
+import de.am.analyze.common.component.type.ComponentType;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public abstract class ApplicationBase {
      * @param component the component
      */
     public void mergeWithApplication(Component component) {
-        requireNonNull(component, "NULL is not permitted as a value for the 'component' parameter.");
+        requireNonNull(component, "Parameter 'component' must not be NULL.");
+
         mergeComponent(component, components);
     }
 
@@ -87,10 +89,15 @@ public abstract class ApplicationBase {
      * @param library the library
      */
     public void addLibrary(Component library) {
-        requireNonNull(library, "NULL is not permitted as a value for the 'library' parameter.");
+        requireNonNull(library, "Parameter 'library' must not be NULL.");
+
         if (!libraries.contains(library)) {
             libraries.add(library);
         }
+    }
+
+    public List<Component> findAllComponentsByType(ComponentType componentType) {
+        return components.findAllComponentsByType(componentType);
     }
 
     /**
@@ -119,6 +126,7 @@ public abstract class ApplicationBase {
      */
     public Component findApplicationComponentByUniqueCoordinate(String uniqueCoordinate) {
         requireNonNull(uniqueCoordinate, "Parameter 'uniqueCoordinate' must not be NULL.");
+
         return findComponentByUniqueCoordinate(components, uniqueCoordinate);
     }
 

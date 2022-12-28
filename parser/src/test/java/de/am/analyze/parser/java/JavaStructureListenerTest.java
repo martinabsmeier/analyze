@@ -17,27 +17,31 @@ package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.SourceParserFactory;
-import de.am.analyze.parser.common.ApplicationBase;
+import de.am.analyze.parser.java.listener.JavaStructureListener;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
 import static de.am.analyze.common.AnalyzeConstants.USER_DIR;
+import static de.am.analyze.common.component.type.ComponentType.JAVA_CLASS;
+import static de.am.analyze.common.component.type.ComponentType.JAVA_CONSTRUCTOR;
 import static java.io.File.separator;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * JUnit test cases for constructors of java classes.
+ * JUnit test cases of {@link JavaStructureListener} class.
  *
  * @author Martin Absmeier
  */
 @TestInstance(Lifecycle.PER_CLASS)
-class JavaConstructorTest {
+class JavaStructureListenerTest {
 
-    private File directory;
+    private JavaApplication application;
 
     @BeforeAll
     void beforeAll() {
@@ -47,17 +51,23 @@ class JavaConstructorTest {
             .concat("resources").concat(separator)
             .concat("java").concat(separator)
             .concat("constructor").concat(separator);
-        directory = new File(path);
 
+        String revisionId = UUID.randomUUID().toString();
+        JavaSourceParser parser = SourceParserFactory.createJavaSourceParser(revisionId, null, null);
+        parser.parseDirectory(new File(path));
+
+        application = (JavaApplication) parser.getApplication();
     }
 
     @Test
-    void parseDirectory() {
-        JavaSourceParser parser = SourceParserFactory.createJavaSourceParser("ParseConstructorTest", null, null);
-        assertNotNull(parser, "We expect an parser instance.");
+    void checkNumberOfClasses() {
+        List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
+        assertEquals(3, classes.size(), "We expect three classes.");
+    }
 
-        parser.parseDirectory(directory);
-        ApplicationBase application = parser.getApplication();
-        Component components = application.getComponents();
+    @Test
+    void checkNumberOfConstructors() {
+        List<Component> constructors = application.findAllComponentsByType(JAVA_CONSTRUCTOR);
+        assertEquals(3, constructors.size(), "We expect three constructors.");
     }
 }

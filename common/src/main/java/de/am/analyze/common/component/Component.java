@@ -153,7 +153,7 @@ public class Component implements Serializable {
     }
 
     /**
-     * Checks whether the {@link Component} knows a child specified by {@code component} or not.
+     * Checks whether this {@link Component} knows a child specified by {@code component} or not.
      *
      * @param component the child component
      * @return true if the component does not know the child, otherwise false
@@ -222,10 +222,7 @@ public class Component implements Serializable {
             return false;
         }
 
-        return attributes.contains(ComponentAttribute.builder()
-                                       .type(attributeType)
-                                       .value(value)
-                                       .build());
+        return attributes.contains(ComponentAttribute.builder().type(attributeType).value(value).build());
     }
 
     // #################################################################################################################
@@ -284,13 +281,28 @@ public class Component implements Serializable {
     /**
      * Checks whether this {@link Component} is of type specified by {@code type}.
      *
-     * @param type the type
+     * @param componentType the type of the component
      * @return true if this component is of the specified type, false otherwise
      */
-    public boolean isType(ComponentType type) {
-        requireNonNull(type, "Parameter 'type' must not be NULL.");
+    public boolean isType(ComponentType componentType) {
+        requireNonNull(componentType, "Parameter 'componentType' must not be NULL.");
 
-        return type.equals(getType());
+        return componentType.equals(type);
+    }
+
+    public List<Component> findAllComponentsByType(ComponentType componentType) {
+        List<Component> cmpList = new ArrayList<>();
+
+        if (isType(componentType)) {
+            cmpList.add(this);
+        }
+        if (this.hasChildren()) {
+            for (Component child : children) {
+                cmpList.addAll(child.findAllComponentsByType(componentType));
+            }
+        }
+
+        return cmpList;
     }
 
     /**
