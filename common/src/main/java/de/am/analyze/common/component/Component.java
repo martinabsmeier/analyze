@@ -63,6 +63,8 @@ public class Component implements Serializable {
      */
     @Builder
     public Component(ComponentType type, String value) {
+        requireNonNull(type, "Parameter 'type' must not be NULL.");
+        requireNonNull(value, "Parameter 'value' must not be NULL.");
         this.type = type;
         this.value = value;
     }

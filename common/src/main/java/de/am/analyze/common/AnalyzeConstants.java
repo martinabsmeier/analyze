@@ -37,6 +37,7 @@ public class AnalyzeConstants {
 
     // parser ##########################################################################################################
     public static class JAVA {
+        public static final String UNIQUE_NAME_DELIMITER = ".";
         public static final String LANG_PACKAGE = "java.lang";
         public static final String IO_PACKAGE = "java.io";
         public static final String DEFAULT_PACKAGE = "default";

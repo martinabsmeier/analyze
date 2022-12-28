@@ -23,6 +23,7 @@ import de.am.analyze.parser.common.SourceParserResult;
 import de.am.analyze.parser.common.SyntaxErrorListener;
 import de.am.analyze.parser.generated.java.JavaLexer;
 import de.am.analyze.parser.generated.java.JavaParser;
+import de.am.analyze.parser.java.listener.JavaParamListener;
 import de.am.analyze.parser.java.listener.JavaStructureListener;
 import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
@@ -58,7 +59,7 @@ public class JavaSourceParser extends SourceParserBase {
 
     @Override
     public void parseFiles(List<File> files) {
-        requireNonNull(files, "NULL is not permitted as a value for the 'files' parameter.");
+        requireNonNull(files, "Parameter 'files' must not be NULL.");
 
         log.info("Start parsing [{}] files.", files.size());
         log.info(SEPARATOR);
@@ -81,6 +82,7 @@ public class JavaSourceParser extends SourceParserBase {
     @Override
     public void initListeners(String revisionId) {
         addListener(new JavaStructureListener(revisionId));
+        addListener(new JavaParamListener(revisionId));
     }
 
     @Override

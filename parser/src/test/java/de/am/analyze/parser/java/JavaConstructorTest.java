@@ -15,7 +15,9 @@
  */
 package de.am.analyze.parser.java;
 
+import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.SourceParserFactory;
+import de.am.analyze.parser.common.ApplicationBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -55,5 +57,7 @@ class JavaConstructorTest {
         assertNotNull(parser, "We expect an parser instance.");
 
         parser.parseDirectory(directory);
+        ApplicationBase application = parser.getApplication();
+        Component components = application.getComponents();
     }
 }

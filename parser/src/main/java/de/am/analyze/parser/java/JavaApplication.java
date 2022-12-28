@@ -15,6 +15,7 @@
  */
 package de.am.analyze.parser.java;
 
+import de.am.analyze.common.AnalyzeConstants.JAVA;
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.common.ApplicationBase;
 import lombok.Synchronized;
@@ -62,6 +63,18 @@ public class JavaApplication extends ApplicationBase {
                 }
             });
         }
+    }
+
+    @Override
+    public String getQualifiedName(Component component) {
+        requireNonNull(component, "Parameter 'component' must not be NULL.");
+
+        String qName = component.getValue();
+        if (component.hasParentAndParentIsNotRoot()) {
+            qName = getQualifiedName(component.getParent()).concat(JAVA.UNIQUE_NAME_DELIMITER).concat(qName);
+        }
+
+        return qName;
     }
 
     /**

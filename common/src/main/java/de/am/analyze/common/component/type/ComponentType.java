@@ -16,15 +16,12 @@
 package de.am.analyze.common.component.type;
 
 /**
- * FIXME Add description
+ * {@code ComponentType} enumeration of the component types.
  *
  * @author Martin Absmeier
  */
 // @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public enum ComponentType {
-
-    // Common types
-    // #################################################################################################################
 
     /**
      * The root element of a component tree.
@@ -43,8 +40,8 @@ public enum ComponentType {
      */
     SOURCE_NAME,
 
-    // Java types
     // #################################################################################################################
+    // Java types
 
     /**
      * Programs are organized as sets of packages. Each package has its own set of names for types, which helps to prevent
@@ -105,10 +102,6 @@ public enum ComponentType {
      * A constructor is used in the creation of an object that is an instance of a class.
      */
     JAVA_CONSTRUCTOR,
-    /**
-     * A default constructor is created from framework if the class has no one.
-     */
-    JAVA_DEFAULT_CONSTRUCTOR,
     /**
      * A method declares executable code that can be invoked, passing a fixed number of values as arguments.
      */

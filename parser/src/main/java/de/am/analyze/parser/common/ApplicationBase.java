@@ -56,19 +56,7 @@ public abstract class ApplicationBase {
      * @param component the component (e.g. source class or method, etc.)
      * @return the unique coordinate
      */
-    public String getQualifiedName(Component component) {
-        requireNonNull(component, "Parameter 'component' must not be NULL.");
-
-        String resultString = component.getValue();
-
-        if (component.hasParentAndParentIsNotRoot()) {
-            String separator = ".";
-            resultString = getQualifiedName(component.getParent()).concat(separator)
-                .concat(resultString);
-        }
-
-        return resultString;
-    }
+    public abstract String getQualifiedName(Component component);
 
     /**
      * Check if the specified {@code component} is visible from {@code visibleFrom} component.

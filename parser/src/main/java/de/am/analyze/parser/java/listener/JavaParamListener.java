@@ -16,21 +16,22 @@
 package de.am.analyze.parser.java.listener;
 
 import de.am.analyze.parser.java.JavaParsingContext;
+import lombok.extern.log4j.Log4j2;
 
 /**
- * {@code JavaStructureListener} is responsible for building the basic structure consisting of classes, interfaces, enumerations
- * and their methods.
+ * FIXME {@code JavaParamListener}
  *
  * @author Martin Absmeier
  */
-public class JavaStructureListener extends JavaBaseListener {
+@Log4j2
+public class JavaParamListener extends JavaBaseListener {
 
     /**
      * Creates a new instance of {@code JavaListenerBase} class.
      *
-     * @param revisionId the unique id of the source code
+     * @param revisionId revisionId the unique id of the source code
      */
-    public JavaStructureListener(String revisionId) {
+    public JavaParamListener(String revisionId) {
         super(revisionId, JavaParsingContext.builder().revisionId(revisionId).build());
     }
 }
