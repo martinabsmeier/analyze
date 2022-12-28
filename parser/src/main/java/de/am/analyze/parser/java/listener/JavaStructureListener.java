@@ -36,10 +36,9 @@ import de.am.analyze.parser.generated.java.JavaParser.PackageDeclarationContext;
 import de.am.analyze.parser.generated.java.JavaParserBaseListener;
 import de.am.analyze.parser.java.JavaApplication;
 import de.am.analyze.parser.java.JavaParsingContext;
+import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,10 +69,8 @@ import static java.util.Objects.nonNull;
  *
  * @author Martin Absmeier
  */
+@Log4j2
 public class JavaStructureListener extends JavaParserBaseListener implements ListenerBase {
-
-    private static final Logger LOGGER = LogManager.getLogger(JavaStructureListener.class);
-
     protected JavaApplication application;
     protected JavaParsingContext parsingContext;
     protected String sourceName;
@@ -179,7 +176,7 @@ public class JavaStructureListener extends JavaParserBaseListener implements Lis
                 parsingContext.addVisibleComponentIfNotContained(component);
             }
         } else {
-            LOGGER.warn("Unknown import: {}", importName);
+            log.warn("Unknown import: {}", importName);
         }
     }
 
@@ -518,7 +515,7 @@ public class JavaStructureListener extends JavaParserBaseListener implements Lis
             pckgCmp = application.findApplicationComponentByUniqueCoordinate(packageName);
         }
         if (isNull(pckgCmp)) {
-            LOGGER.warn("Can not find package: {}", packageName);
+            log.warn("Can not find package: {}", packageName);
         } else {
             parsingContext.addComponentWithVisibleChildren(pckgCmp);
         }

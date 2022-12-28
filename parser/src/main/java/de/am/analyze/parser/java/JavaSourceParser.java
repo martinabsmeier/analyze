@@ -25,12 +25,11 @@ import de.am.analyze.parser.generated.java.JavaLexer;
 import de.am.analyze.parser.generated.java.JavaParser;
 import de.am.analyze.parser.java.listener.JavaStructureListener;
 import lombok.Builder;
+import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +41,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author Martin Absmeier
  */
+@Log4j2
 public class JavaSourceParser extends SourceParserBase {
-    private static final Logger LOGGER = LogManager.getLogger(JavaSourceParser.class);
 
     /**
      * Creates a new instance of {@code JavaSourceParser} with the specified {@code libraries} class.
@@ -61,8 +60,8 @@ public class JavaSourceParser extends SourceParserBase {
     public void parseFiles(List<File> files) {
         requireNonNull(files, "NULL is not permitted as a value for the 'files' parameter.");
 
-        LOGGER.info("Start parsing [{}] files.", files.size());
-        LOGGER.info(SEPARATOR);
+        log.info("Start parsing [{}] files.", files.size());
+        log.info(SEPARATOR);
 
         List<SourceParserResult> parserResults = executeParser(files);
 
@@ -94,7 +93,7 @@ public class JavaSourceParser extends SourceParserBase {
             .sourceName(fileName)
             .build();
 
-        LOGGER.info("Executed [{} with mode {} on file {} of {}] -> {}", this.getClass().getSimpleName(), mode, countFiles, numberOfFiles, fileName);
+        log.info("Executed [{} with mode {} on file {} of {}] -> {}", this.getClass().getSimpleName(), mode, countFiles, numberOfFiles, fileName);
 
         return parserResult;
     }

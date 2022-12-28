@@ -29,7 +29,6 @@ import static java.util.Objects.requireNonNull;
  * @author Martin Absmeier
  */
 public class JavaApplication extends ApplicationBase {
-
     private static JavaApplication instance;
 
     /**
@@ -70,13 +69,13 @@ public class JavaApplication extends ApplicationBase {
      * Java specific implementation of visibility rules
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.6.1
      *
-     * @param component         the component for which the test is carried out
-     * @param visibleFrom       the component from which the other is visible
-     * @param withinInheritance true if inheritance is to be taken into account, false otherwise
+     * @param component       the component for which the test is carried out
+     * @param visibleFrom     the component from which the other is visible
+     * @param withInheritance true if inheritance is to be taken into account, false otherwise
      * @return true if {@code component} is visible from {@code visibleFrom} component, false otherwise
      */
     @Override
-    public boolean isComponentVisible(Component component, Component visibleFrom, boolean withinInheritance) {
+    public boolean isComponentVisible(Component component, Component visibleFrom, boolean withInheritance) {
         return false;
     }
 

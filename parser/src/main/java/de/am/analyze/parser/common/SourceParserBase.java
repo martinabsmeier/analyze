@@ -22,12 +22,11 @@ import de.am.analyze.parser.SourceParser;
 import de.am.analyze.parser.SourceType;
 import lombok.Getter;
 import lombok.Synchronized;
+import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,10 +46,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author Martin Absmeier
  */
+@Log4j2
 public abstract class SourceParserBase implements SourceParser {
-    private static final Logger LOGGER = LogManager.getLogger(SourceParserBase.class);
-
+    @Getter
     protected final ApplicationBase application;
+    @Getter
     protected final SourceType sourceType;
     protected final ParseTreeWalker treeWalker;
     protected final StopWatch sw;
@@ -84,10 +84,14 @@ public abstract class SourceParserBase implements SourceParser {
         // First initialize standard listener and libraries
         initListeners(revisionId);
         initLibraries();
-        if (nonNull(listeners)) {
-            this.listeners.addAll(listeners);
+        if (nonNull(listeners) && !listeners.isEmpty()) {
+            for (ListenerBase listener : listeners) {
+                if (!this.listeners.contains(listener)) {
+                    this.listeners.add(listener);
+                }
+            }
         }
-        if (nonNull(libraries)) {
+        if (nonNull(libraries) && !libraries.isEmpty()) {
             this.libraries.addAll(libraries);
         }
     }
@@ -102,12 +106,12 @@ public abstract class SourceParserBase implements SourceParser {
         extensions.forEach(extension -> {
             List<File> filesToParse = findFilesByExtension(directory, extension);
             if (!filesToParse.isEmpty()) {
-                LOGGER.info("Reading files with extension [".concat(extension).concat("] from directory -> ").concat(directory.getAbsolutePath()));
-                LOGGER.info(SEPARATOR);
+                log.info("Reading files with extension [".concat(extension).concat("] from directory -> ").concat(directory.getAbsolutePath()));
+                log.info(SEPARATOR);
                 parseFiles(filesToParse);
             } else {
-                LOGGER.info("No files found for extension [".concat(extension).concat("] in directory -> ").concat(directory.getAbsolutePath()));
-                LOGGER.info(SEPARATOR);
+                log.info("No files found for extension [".concat(extension).concat("] in directory -> ").concat(directory.getAbsolutePath()));
+                log.info(SEPARATOR);
             }
         });
     }
@@ -156,13 +160,13 @@ public abstract class SourceParserBase implements SourceParser {
             }
         } catch (IOException ex) {
             String fileName = cleanupFileName(file.getAbsolutePath());
-            LOGGER.error(format("Can not parse file [{0}] due to: ", fileName), ex);
+            log.error(format("Can not parse file [{0}] due to: ", fileName), ex);
         } catch (RecognitionException | ParseCancellationException ex) {
             String fileName = cleanupFileName(file.getAbsolutePath());
-            LOGGER.info(SEPARATOR);
-            LOGGER.error("Parsing error in file [{}] due to: {}", fileName, ex.getMessage());
-            LOGGER.info(SEPARATOR);
-            LOGGER.error(ex);
+            log.info(SEPARATOR);
+            log.error("Parsing error in file [{}] due to: {}", fileName, ex.getMessage());
+            log.info(SEPARATOR);
+            log.error(ex);
         }
         return null;
     }
@@ -193,9 +197,9 @@ public abstract class SourceParserBase implements SourceParser {
 
 
         sw.stop();
-        LOGGER.info(SEPARATOR);
-        LOGGER.info("{} processed {} files in {} ms.", this.getClass().getSimpleName(), files.size(), sw.getTime());
-        LOGGER.info(SEPARATOR);
+        log.info(SEPARATOR);
+        log.info("{} processed {} files in {} ms.", this.getClass().getSimpleName(), files.size(), sw.getTime());
+        log.info(SEPARATOR);
         sw.reset();
 
         return parserResults;
@@ -213,8 +217,8 @@ public abstract class SourceParserBase implements SourceParser {
         numberOfFiles = parserResults.size();
 
         String listenerName = listener.getClass().getSimpleName();
-        LOGGER.info("Execute listener {} on {} files.", listenerName, numberOfFiles);
-        LOGGER.info(SEPARATOR);
+        log.info("Execute listener {} on {} files.", listenerName, numberOfFiles);
+        log.info(SEPARATOR);
 
         if (sw.isStopped()) {
             sw.start();
@@ -226,14 +230,14 @@ public abstract class SourceParserBase implements SourceParser {
             application.mergeWithApplication(listener.getResult());
             listener.reset();
 
-            LOGGER.info("Executed [{} on file {} of {}] -> {}", listenerName, countFiles, numberOfFiles, parserResult.getSourceName());
+            log.info("Executed [{} on file {} of {}] -> {}", listenerName, countFiles, numberOfFiles, parserResult.getSourceName());
             countFiles++;
         });
 
         sw.stop();
-        LOGGER.info(SEPARATOR);
-        LOGGER.info("{} processed {} files in {} ms.", listenerName, numberOfFiles, sw.getTime());
-        LOGGER.info(SEPARATOR);
+        log.info(SEPARATOR);
+        log.info("{} processed {} files in {} ms.", listenerName, numberOfFiles, sw.getTime());
+        log.info(SEPARATOR);
         sw.reset();
     }
 

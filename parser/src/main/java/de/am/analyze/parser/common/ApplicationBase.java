@@ -33,7 +33,6 @@ import static java.util.Objects.requireNonNull;
  * @author Martin Absmeier
  */
 public abstract class ApplicationBase {
-
     @Getter
     private final Component components = Component.builder().type(APP_ROOT).value(APP_ROOT.name()).build();
     @Getter

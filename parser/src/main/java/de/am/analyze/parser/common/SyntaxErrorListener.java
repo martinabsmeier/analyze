@@ -15,22 +15,20 @@
  */
 package de.am.analyze.parser.common;
 
+import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * {@code SyntaxErrorListener} is responsible for logging syntax errors.
  *
  * @author Martin Absmeier
  */
+@Log4j2
 public class SyntaxErrorListener extends BaseErrorListener {
-    private static final Logger LOGGER = LogManager.getLogger(SyntaxErrorListener.class);
-
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        LOGGER.error("Syntax error in line {}: {} {}", line, charPositionInLine, msg);
+        log.error("Syntax error in line {}: {} {}", line, charPositionInLine, msg);
     }
 }
