@@ -15,16 +15,18 @@
  */
 package de.am.analyze.common.component.type;
 
+import de.am.analyze.common.component.Component;
+
 /**
- * FIXME Add description
+ * Enumeration of the attribute types of a {@link Component}.
  *
  * @author Martin Absmeier
  */
 // @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public enum ComponentAttributeType {
 
-    // Common attributes
     // #################################################################################################################
+    // Common attributes
 
     /**
      * The code snippet starts at this line.
@@ -51,8 +53,8 @@ public enum ComponentAttributeType {
      */
     CHECKSUM,
 
-    // Java attributes
     // #################################################################################################################
+    // Java attributes
 
     /**
      * The name of the package to which the component belongs.
@@ -66,11 +68,11 @@ public enum ComponentAttributeType {
      * The optional implements' clause in a class declaration lists the names of interfaces that are direct
      * superinterfaces of the class being declared.
      */
-    JAVA_IMPLEMENT_INTERFACE_TYPE,
+    JAVA_IMPLEMENT_INTERFACE,
     /**
      * The optional extends clause in a normal class declaration specifies the direct superclass of the current class.
      */
-    JAVA_EXTEND_CLASS_TYPE,
+    JAVA_EXTEND_CLASS,
     /**
      * A modifier defines the type of a variable or parameter, this can be also the return type.
      */
