@@ -47,6 +47,7 @@ public class AnalyzeConstants {
         public static final String MODIFIER_STATIC = "static";
         public static final String MODIFIER_FINAL = "final";
         public static final String MODIFIER_NATIVE = "native";
+        public static final String MODIFIER_DEFAULT = "default";
 
         // #############################################################################################################
         private JAVA() { }

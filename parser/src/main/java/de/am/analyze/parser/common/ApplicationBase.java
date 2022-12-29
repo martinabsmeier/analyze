@@ -39,6 +39,8 @@ public abstract class ApplicationBase {
     @Getter
     private final List<Component> libraries = new ArrayList<>();
 
+    private static final String PARAM_UNIQUE_COORDINATE_NOT_NULL = "Parameter 'uniqueCoordinate' must not be NULL.";
+
     // #################################################################################################################
 
     /**
@@ -108,7 +110,7 @@ public abstract class ApplicationBase {
      * @return the component or NULL if no one is found
      */
     public Component findComponentByUniqueCoordinate(String uniqueCoordinate) {
-        requireNonNull(uniqueCoordinate, "Parameter 'uniqueCoordinate' must not be NULL.");
+        requireNonNull(uniqueCoordinate, PARAM_UNIQUE_COORDINATE_NOT_NULL);
 
         Component component = findApplicationComponentByUniqueCoordinate(uniqueCoordinate);
         if (isNull(component)) {
@@ -125,7 +127,7 @@ public abstract class ApplicationBase {
      * @return the component or NULL if no one is found
      */
     public Component findApplicationComponentByUniqueCoordinate(String uniqueCoordinate) {
-        requireNonNull(uniqueCoordinate, "Parameter 'uniqueCoordinate' must not be NULL.");
+        requireNonNull(uniqueCoordinate, PARAM_UNIQUE_COORDINATE_NOT_NULL);
 
         return findComponentByUniqueCoordinate(components, uniqueCoordinate);
     }
@@ -138,7 +140,7 @@ public abstract class ApplicationBase {
      * @return the component or NULL if no one is found
      */
     public Component findLibraryComponentByUniqueCoordinate(String uniqueCoordinate) {
-        requireNonNull(uniqueCoordinate, "Parameter 'uniqueCoordinate' must not be NULL.");
+        requireNonNull(uniqueCoordinate, PARAM_UNIQUE_COORDINATE_NOT_NULL);
 
         return libraries.stream()
             .map(library -> findComponentByUniqueCoordinate(library, uniqueCoordinate))

@@ -19,6 +19,7 @@ import de.am.analyze.common.component.Component;
 import de.am.analyze.common.component.ComponentAttribute;
 import de.am.analyze.common.component.type.ComponentAttributeType;
 import de.am.analyze.common.component.type.ComponentType;
+import de.am.analyze.common.exception.ParserException;
 import de.am.analyze.parser.common.ListenerBase;
 import de.am.analyze.parser.generated.java.JavaParser.ClassBodyContext;
 import de.am.analyze.parser.generated.java.JavaParser.ClassDeclarationContext;
@@ -28,10 +29,15 @@ import de.am.analyze.parser.generated.java.JavaParser.ConstructorDeclarationCont
 import de.am.analyze.parser.generated.java.JavaParser.CreatorContext;
 import de.am.analyze.parser.generated.java.JavaParser.EnumConstantContext;
 import de.am.analyze.parser.generated.java.JavaParser.EnumDeclarationContext;
+import de.am.analyze.parser.generated.java.JavaParser.FieldDeclarationContext;
 import de.am.analyze.parser.generated.java.JavaParser.IdentifierContext;
 import de.am.analyze.parser.generated.java.JavaParser.ImportDeclarationContext;
 import de.am.analyze.parser.generated.java.JavaParser.InterfaceDeclarationContext;
 import de.am.analyze.parser.generated.java.JavaParser.PackageDeclarationContext;
+import de.am.analyze.parser.generated.java.JavaParser.PrimitiveTypeContext;
+import de.am.analyze.parser.generated.java.JavaParser.TypeListContext;
+import de.am.analyze.parser.generated.java.JavaParser.TypeTypeContext;
+import de.am.analyze.parser.generated.java.JavaParser.VariableDeclaratorContext;
 import de.am.analyze.parser.generated.java.JavaParserBaseListener;
 import de.am.analyze.parser.java.JavaApplication;
 import de.am.analyze.parser.java.JavaParsingContext;
@@ -43,9 +49,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.am.analyze.common.AnalyzeConstants.EMPTY_STRING;
 import static de.am.analyze.common.AnalyzeConstants.JAVA;
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_ANNOTATED;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_EXTEND_CLASS;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_IMPLEMENT_INTERFACE;
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_MODIFIER;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_TYPE;
 import static de.am.analyze.common.component.type.ComponentAttributeType.SOURCE_NAME;
 import static de.am.analyze.common.component.type.ComponentAttributeType.START_COLUMN;
 import static de.am.analyze.common.component.type.ComponentAttributeType.START_LINE;
@@ -55,6 +65,7 @@ import static de.am.analyze.common.component.type.ComponentType.JAVA_CLASS;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_CONSTRUCTOR;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_ENUM;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_ENUM_CONSTANT;
+import static de.am.analyze.common.component.type.ComponentType.JAVA_FIELD;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_INTERFACE;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_PACKAGE;
 import static java.io.File.separator;
@@ -231,12 +242,16 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         addCompilationUnitAttribute(newClass);
         addSourcePositionToComponentIfNotContained(newClass, ctx);
         addImportsToComponent(newClass);
+        addAndClearCollectedModifiers(newClass, false);
         // In order to be able to get qualified names for the parameterized types below we need to add the child to the
         // parent before processing the type parameters. Otherwise, we only get "T" or "List.T" instead of "java.lang.List.T"
         addToCurrentComponentIfNotContained(newClass);
-
-        // Modifiers are collected one level above
-        addAndClearCollectedModifiers(newClass, false);
+        List<String> interfaces = getInterfacesOrEmptyList(ctx);
+        interfaces.forEach(interfaceName -> newClass.addAttribute(createAttribute(JAVA_IMPLEMENT_INTERFACE, interfaceName)));
+        String extendName = getExtendsOrEmptyString(ctx);
+        if (!extendName.isEmpty()) {
+            newClass.addAttribute(createAttribute(JAVA_EXTEND_CLASS, extendName));
+        }
 
         parsingContext.setCurrentComponent(newClass);
     }
@@ -268,6 +283,32 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     public void exitClassBody(ClassBodyContext ctx) {
         Component currentComponent = parsingContext.getCurrentComponent();
         addDefaultConstructorIfNecessary(currentComponent);
+    }
+
+    @Override
+    public void enterFieldDeclaration(FieldDeclarationContext ctx) {
+        List<VariableDeclaratorContext> declarators = ctx.variableDeclarators().variableDeclarator();
+        if (declarators.size() > 1) {
+            throw new ParserException("We expect only one field declaration.");
+        }
+
+        String fieldName = declarators.get(0).variableDeclaratorId().getText();
+        Component newField = createComponent(JAVA_FIELD, fieldName);
+
+        addSourcePositionToComponentIfNotContained(newField, ctx);
+        addAndClearCollectedModifiers(newField, false);
+        addToCurrentComponentIfNotContained(newField);
+        String primitiveType = getPrimitiveTypeOrEmptyString(ctx.typeType());
+        if (!primitiveType.isEmpty()) {
+            newField.addAttribute(createAttribute(JAVA_TYPE, primitiveType));
+        }
+
+        parsingContext.setCurrentComponent(newField);
+    }
+
+    @Override
+    public void exitFieldDeclaration(FieldDeclarationContext ctx) {
+        setParentIfAvailable();
     }
 
     // #################################################################################################################
@@ -557,5 +598,32 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         List<Component> constructors = component.findChildrenByType(JAVA_CONSTRUCTOR);
         constructors.addAll(component.findChildrenByType(JAVA_CONSTRUCTOR));
         return constructors.isEmpty() && component.isType(JAVA_CLASS);
+    }
+
+    private String getPrimitiveTypeOrEmptyString(TypeTypeContext typeCtx) {
+        if (isNull(typeCtx)) {
+            return EMPTY_STRING;
+        }
+
+        PrimitiveTypeContext primitiveType = typeCtx.primitiveType();
+        return isNull(primitiveType) ? EMPTY_STRING : primitiveType.getText();
+    }
+
+    private List<String> getInterfacesOrEmptyList(ClassDeclarationContext ctx) {
+        List<String> interfaces = new ArrayList<>();
+
+        if (nonNull(ctx.IMPLEMENTS()) && !ctx.typeList().isEmpty()) {
+            List<TypeListContext> typeContextList = ctx.typeList();
+            for (TypeListContext typeContext : typeContextList) {
+                String[] interfaceArray = typeContext.getText().split(",");
+                interfaces.addAll(Arrays.asList(interfaceArray));
+            }
+        }
+
+        return interfaces;
+    }
+
+    private String getExtendsOrEmptyString(ClassDeclarationContext ctx) {
+        return "";
     }
 }

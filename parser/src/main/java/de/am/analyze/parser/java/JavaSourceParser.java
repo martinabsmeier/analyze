@@ -17,7 +17,6 @@ package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.SourceType;
-import de.am.analyze.parser.common.ApplicationBase;
 import de.am.analyze.parser.common.ListenerBase;
 import de.am.analyze.parser.common.SourceParserBase;
 import de.am.analyze.parser.common.SourceParserResult;
@@ -62,7 +61,7 @@ public class JavaSourceParser extends SourceParserBase {
     public void parseFiles(List<File> files) {
         requireNonNull(files, "Parameter 'files' must not be NULL.");
 
-        log.info("Start parsing [{}] files.", files.size());
+        log.info("Start parsing {} files.", files.size());
         log.info(SEPARATOR);
 
         List<SourceParserResult> parserResults = executeParser(files);
