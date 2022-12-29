@@ -33,7 +33,7 @@ public class AnalyzeConstants {
     public static final String USER_HOME_DIR = System.getProperty("user.home");
     public static final String DEFAULT_DELIMITER = ".";
     public static final String DEFAULT_DELIMITER_REGEX = "[.]";
-    public static final String DEFAULT_REVISION_ID = "revision id";
+    public static final String DEFAULT_REVISION_ID = "revisionId";
 
     // parser ##########################################################################################################
     public static class JAVA {
@@ -48,7 +48,7 @@ public class AnalyzeConstants {
         public static final String MODIFIER_FINAL = "final";
         public static final String MODIFIER_NATIVE = "native";
 
-        // #################################################################################################################
+        // #############################################################################################################
         private JAVA() { }
     }
 

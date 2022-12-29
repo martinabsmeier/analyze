@@ -175,7 +175,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
                 parsingContext.addVisibleComponentIfNotContained(component);
             }
         } else {
-            log.warn("Unknown import: {}", importName);
+            log.debug("Unknown import: {}", importName);
         }
     }
 
