@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package java.constructor;
+package java.structure;
 
 /**
- * Constructors with parameters to check if we process this correct.
+ * Empty (default) constructor defined to check if no default constructor is generated
  *
  * @author Martin Absmeier
  */
-public class ParameterConstructor<T extends Number> {
-
-    private T count;
-
-    public ParameterConstructor(Number count) {
-        this.count = count;
-    }
-
-    public ParameterConstructor(T count) {
-        this.count = count;
+public class EmptyDefaultConstructor {
+    public EmptyDefaultConstructor() {
+        super();
     }
 }
