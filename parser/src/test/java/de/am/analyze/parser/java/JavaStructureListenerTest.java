@@ -16,7 +16,7 @@
 package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
-import de.am.analyze.common.component.type.ComponentType;
+import de.am.analyze.common.component.ComponentAttribute;
 import de.am.analyze.parser.SourceParserFactory;
 import de.am.analyze.parser.java.listener.JavaStructureListener;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,10 +29,15 @@ import java.util.List;
 
 import static de.am.analyze.common.AnalyzeConstants.DEFAULT_REVISION_ID;
 import static de.am.analyze.common.AnalyzeConstants.USER_DIR;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_EXTEND;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_IMPLEMENT;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_CLASS;
 import static de.am.analyze.common.component.type.ComponentType.JAVA_CONSTRUCTOR;
+import static de.am.analyze.common.component.type.ComponentType.JAVA_FIELD;
+import static de.am.analyze.common.component.type.ComponentType.JAVA_INTERFACE;
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * JUnit test cases of {@link JavaStructureListener} class.
@@ -62,19 +67,45 @@ class JavaStructureListenerTest {
     @Test
     void checkNumberOfClasses() {
         List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
-        assertEquals(4, classes.size(), "We expect three classes.");
+        assertEquals(4, classes.size(), "We expect four classes.");
+    }
+
+    @Test
+    void checkNumberOfInterfaces() {
+        List<Component> interfaces = application.findAllComponentsByType(JAVA_INTERFACE);
+        assertEquals(1, interfaces.size(), "We expect one interface.");
     }
 
     @Test
     void checkNumberOfConstructors() {
         List<Component> constructors = application.findAllComponentsByType(JAVA_CONSTRUCTOR);
-        assertEquals(4, constructors.size(), "We expect three constructors.");
+        assertEquals(4, constructors.size(), "We expect four constructors.");
     }
 
     @Test
-    void checkFields() {
+    void checkFieldsOfOakTree() {
         Component oakTree = application.findComponentByUniqueCoordinate("java.structure.OakTree");
-        List<Component> fields = oakTree.findChildrenByType(ComponentType.JAVA_FIELD);
-        assertEquals(2, fields.size());
+        assertNotNull(oakTree, "We expect an instance.");
+
+        List<Component> fields = oakTree.findChildrenByType(JAVA_FIELD);
+        assertEquals(2, fields.size(), "We expect two fields.");
+    }
+
+    @Test
+    void checkImplementInterfacesOfOakTree() {
+        Component oakTree = application.findComponentByUniqueCoordinate("java.structure.OakTree");
+        assertNotNull(oakTree, "We expect an instance.");
+
+        List<ComponentAttribute> interfaces = oakTree.findAttributesByType(JAVA_IMPLEMENT);
+        assertEquals(2, interfaces.size(), "We expect two interfaces.");
+    }
+
+    @Test
+    void checkExtendsInterfaceOfTree() {
+        Component tree = application.findComponentByUniqueCoordinate("java.structure.Tree");
+        assertNotNull(tree, "We expect an instance.");
+
+        List<ComponentAttribute> interfaces = tree.findAttributesByType(JAVA_EXTEND);
+        assertEquals(2, interfaces.size(), "We expect two interfaces.");
     }
 }

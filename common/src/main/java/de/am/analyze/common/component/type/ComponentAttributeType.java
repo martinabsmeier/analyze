@@ -68,11 +68,12 @@ public enum ComponentAttributeType {
      * The optional implements' clause in a class declaration lists the names of interfaces that are direct
      * superinterfaces of the class being declared.
      */
-    JAVA_IMPLEMENT_INTERFACE,
+    JAVA_IMPLEMENT,
     /**
-     * The optional extends clause in a normal class declaration specifies the direct superclass of the current class.
+     * The optional extends clause in a normal class or interface declaration specifies the direct superclass of the
+     * current class or interface.
      */
-    JAVA_EXTEND_CLASS,
+    JAVA_EXTEND,
     /**
      * A modifier defines the type of a variable or parameter, this can be also the return type.
      */

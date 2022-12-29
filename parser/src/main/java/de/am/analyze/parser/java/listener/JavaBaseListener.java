@@ -44,6 +44,7 @@ import de.am.analyze.parser.java.JavaParsingContext;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,8 +53,8 @@ import java.util.List;
 import static de.am.analyze.common.AnalyzeConstants.EMPTY_STRING;
 import static de.am.analyze.common.AnalyzeConstants.JAVA;
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_ANNOTATED;
-import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_EXTEND_CLASS;
-import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_IMPLEMENT_INTERFACE;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_EXTEND;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_IMPLEMENT;
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_MODIFIER;
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_TYPE;
 import static de.am.analyze.common.component.type.ComponentAttributeType.SOURCE_NAME;
@@ -220,6 +221,8 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         addImportsToComponent(newInterface);
         addAndClearCollectedModifiers(newInterface, true);
         addToCurrentComponentIfNotContained(newInterface);
+        List<String> extendList = getExtendsOrEmptyList(ctx.EXTENDS(), ctx.typeList());
+        extendList.forEach(extendName -> newInterface.addAttribute(createAttribute(JAVA_EXTEND, extendName)));
 
         parsingContext.setCurrentComponent(newInterface);
     }
@@ -246,12 +249,10 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         // In order to be able to get qualified names for the parameterized types below we need to add the child to the
         // parent before processing the type parameters. Otherwise, we only get "T" or "List.T" instead of "java.lang.List.T"
         addToCurrentComponentIfNotContained(newClass);
-        List<String> interfaces = getInterfacesOrEmptyList(ctx);
-        interfaces.forEach(interfaceName -> newClass.addAttribute(createAttribute(JAVA_IMPLEMENT_INTERFACE, interfaceName)));
-        String extendName = getExtendsOrEmptyString(ctx);
-        if (!extendName.isEmpty()) {
-            newClass.addAttribute(createAttribute(JAVA_EXTEND_CLASS, extendName));
-        }
+        List<String> interfacesList = getInterfacesOrEmptyList(ctx.IMPLEMENTS(), ctx.typeList());
+        interfacesList.forEach(interfaceName -> newClass.addAttribute(createAttribute(JAVA_IMPLEMENT, interfaceName)));
+        List<String> extendList = getExtendsOrEmptyList(ctx.EXTENDS(), ctx.typeList());
+        extendList.forEach(extendName -> newClass.addAttribute(createAttribute(JAVA_EXTEND, extendName)));
 
         parsingContext.setCurrentComponent(newClass);
     }
@@ -609,12 +610,11 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         return isNull(primitiveType) ? EMPTY_STRING : primitiveType.getText();
     }
 
-    private List<String> getInterfacesOrEmptyList(ClassDeclarationContext ctx) {
+    private List<String> getInterfacesOrEmptyList(TerminalNode interfacesNode, List<TypeListContext> typeList) {
         List<String> interfaces = new ArrayList<>();
 
-        if (nonNull(ctx.IMPLEMENTS()) && !ctx.typeList().isEmpty()) {
-            List<TypeListContext> typeContextList = ctx.typeList();
-            for (TypeListContext typeContext : typeContextList) {
+        if (nonNull(interfacesNode) && !typeList.isEmpty()) {
+            for (TypeListContext typeContext : typeList) {
                 String[] interfaceArray = typeContext.getText().split(",");
                 interfaces.addAll(Arrays.asList(interfaceArray));
             }
@@ -623,7 +623,16 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         return interfaces;
     }
 
-    private String getExtendsOrEmptyString(ClassDeclarationContext ctx) {
-        return "";
+    private List<String> getExtendsOrEmptyList(TerminalNode extendsNode, List<TypeListContext> typeList) {
+        List<String> extendsList = new ArrayList<>();
+
+        if (nonNull(extendsNode) && !typeList.isEmpty()) {
+            for (TypeListContext typeContext : typeList) {
+                String[] extendsArray = typeContext.getText().split(",");
+                extendsList.addAll(Arrays.asList(extendsArray));
+            }
+        }
+
+        return extendsList;
     }
 }
