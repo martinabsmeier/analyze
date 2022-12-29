@@ -22,7 +22,7 @@ import java.io.Serializable;
  *
  * @author Martin Absmeier
  */
-public class OakTree implements Tree, Serializable {
+public class OakTree implements Tree, Cloneable {
 
     private float root;
     private float hight;

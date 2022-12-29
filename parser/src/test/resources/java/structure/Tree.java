@@ -15,12 +15,14 @@
  */
 package java.structure;
 
+import java.io.Serializable;
+
 /**
  * Interface used in JUnit test cases.
  *
  * @author Martin Absmeier
  */
-public interface Tree {
+public interface Tree extends Cloneable, Serializable {
 
     void initialize();
 
