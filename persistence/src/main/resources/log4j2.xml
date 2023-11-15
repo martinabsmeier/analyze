@@ -3,8 +3,8 @@
     <Properties>
         <Property name="logPath">target/log</Property>
         <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Property>
-        <Property name="fileName">${logPath}/analyzer-common.log</Property>
-        <Property name="filePattern">${logPath}/analyzer-common-%d{yyyy-MM-dd-hh}.log.gz</Property>
+        <Property name="fileName">${logPath}/analyzer-persistence.log</Property>
+        <Property name="filePattern">${logPath}/analyzer-persistence-%d{yyyy-MM-dd-hh}.log.gz</Property>
     </Properties>
 
     <Appenders>
@@ -18,7 +18,7 @@
             </PatternLayout>
 
             <Policies>
-                <SizeBasedTriggeringPolicy size="20 GB"/>
+                <SizeBasedTriggeringPolicy size="64 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="5"/>
         </RollingFile>
