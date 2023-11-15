@@ -14,6 +14,7 @@
     <groupId>de.am.analyze</groupId>
     <artifactId>analyze-persistence</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>analyze-persistence</name>
     <description>persistence</description>
