@@ -58,7 +58,7 @@ public class JavaTypeListener extends JavaBaseListener {
         Component currentComponent = parsingContext.getCurrentComponent();
         AbstractType type = ctx.accept(typeVisitor);
 
-        System.out.println("OK");
+        // System.out.println("OK");
     }
 
     /*
