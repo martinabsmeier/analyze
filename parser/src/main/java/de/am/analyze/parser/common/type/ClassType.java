@@ -26,12 +26,12 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@code BaseType} is the base class for all type representations.
+ * {@code AbstractType} is the base class for all type representations.
  *
  * @author Martin Absmeier
  */
 @EqualsAndHashCode(callSuper = true)
-public class ClassType extends BaseType {
+public class ClassType extends AbstractType {
 
     private final Component relatedComponent;
     /**
@@ -51,7 +51,7 @@ public class ClassType extends BaseType {
     }
 
     @Override
-    public boolean canUpcast(BaseType type) {
+    public boolean canUpcast(AbstractType type) {
         if (isNull(type)) {
             return false;
         }

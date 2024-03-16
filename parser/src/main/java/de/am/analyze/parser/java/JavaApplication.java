@@ -17,7 +17,6 @@ package de.am.analyze.parser.java;
 
 import de.am.analyze.common.component.Component;
 import de.am.analyze.parser.common.ApplicationBase;
-import lombok.Synchronized;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -37,8 +36,7 @@ public class JavaApplication extends ApplicationBase {
      *
      * @return the singleton instance
      */
-    @Synchronized
-    public static JavaApplication getInstance() {
+    public static synchronized JavaApplication getInstance() {
         if (isNull(instance)) {
             instance = new JavaApplication();
         }
@@ -65,23 +63,7 @@ public class JavaApplication extends ApplicationBase {
         }
     }
 
-    /**
-     * Check if the specified {@code component} is visible from {@code visibleFrom} component.
-     * Java specific implementation of visibility rules
-     * https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.6.1
-     *
-     * @param component       the component for which the test is carried out
-     * @param visibleFrom     the component from which the other is visible
-     * @param withInheritance true if inheritance is to be taken into account, false otherwise
-     * @return true if {@code component} is visible from {@code visibleFrom} component, false otherwise
-     */
-    @Override
-    public boolean isComponentVisible(Component component, Component visibleFrom, boolean withInheritance) {
-        return false;
-    }
-
     // #################################################################################################################
     private JavaApplication() {
-        // JavaApplication is a singleton
     }
 }

@@ -37,6 +37,5 @@ public class JavaBaseVisitor<T> extends JavaParserBaseVisitor<T> {
     public JavaBaseVisitor(JavaParsingContext parsingContext) {
         this.application = JavaApplication.getInstance();
         this.parsingContext = parsingContext;
-
     }
 }

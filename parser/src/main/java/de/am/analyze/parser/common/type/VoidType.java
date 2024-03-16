@@ -26,7 +26,7 @@ import static de.am.analyze.parser.common.type.enums.BaseTypeEnum.VOID;
  * @author Martin Absmeier
  */
 @EqualsAndHashCode(callSuper = true)
-public class VoidType extends BaseType {
+public class VoidType extends AbstractType {
 
     /**
      * Creates a new instance
@@ -41,7 +41,7 @@ public class VoidType extends BaseType {
     }
 
     @Override
-    public boolean canUpcast(BaseType type) {
+    public boolean canUpcast(AbstractType type) {
         // You can not cast void to anything
         return false;
     }

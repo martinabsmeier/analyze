@@ -25,7 +25,7 @@ import static de.am.analyze.parser.common.type.enums.BaseTypeEnum.NULL;
  * @author Martin Absmeier
  */
 @EqualsAndHashCode(callSuper = true)
-public class NullType extends BaseType {
+public class NullType extends AbstractType {
 
     /**
      * Creates a new instance
@@ -40,7 +40,7 @@ public class NullType extends BaseType {
     }
 
     @Override
-    public boolean canUpcast(BaseType type) {
+    public boolean canUpcast(AbstractType type) {
         // You can not cast NULL to anything
         return false;
     }

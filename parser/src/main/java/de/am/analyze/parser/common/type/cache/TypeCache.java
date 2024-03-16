@@ -15,7 +15,7 @@
  */
 package de.am.analyze.parser.common.type.cache;
 
-import de.am.analyze.parser.common.type.BaseType;
+import de.am.analyze.parser.common.type.AbstractType;
 import de.am.analyze.parser.common.type.PrimitiveType;
 import lombok.Synchronized;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 /**
- * {@code TypeCache} ensures that there is always only one instance of a {@link BaseType}. Without this cache, each method
+ * {@code TypeCache} ensures that there is always only one instance of a {@link AbstractType}. Without this cache, each method
  * of a class that uses int parameters would have its own instance of a {@link PrimitiveType}.<br>
  * {@code TypeCache} checks whether the instance of a type is already known, if so then it is returned, otherwise a new
  * one is created and returned.
@@ -40,7 +40,7 @@ public class TypeCache {
      * Cache of the types of a programming language.<br>
      * The key of the map is the unique identifier of the type.
      */
-    private final Map<String, BaseType> cache = new HashMap<>();
+    private final Map<String, AbstractType> cache = new HashMap<>();
 
     /**
      * Return the singleton instance of {@code TypeCache}.
@@ -62,7 +62,7 @@ public class TypeCache {
      * @return the singleton type
      */
     @Synchronized
-    public BaseType getType(BaseType type) {
+    public AbstractType getType(AbstractType type) {
         if (isNull(type)) {
             return null;
         }
@@ -72,13 +72,13 @@ public class TypeCache {
     }
 
     /**
-     * Retrieves the {@link BaseType} specified by {@code uniqueTypeIdentifier} from the cache.
+     * Retrieves the {@link AbstractType} specified by {@code uniqueTypeIdentifier} from the cache.
      *
      * @param uniqueIdentifier the unique identifier of the type
      * @return the base type or NULL if no base type is found
      */
     @Synchronized
-    public BaseType findBaseTypeByUniqueIdentifier(String uniqueIdentifier) {
+    public AbstractType findBaseTypeByUniqueIdentifier(String uniqueIdentifier) {
         if (isNull(uniqueIdentifier) || uniqueIdentifier.isEmpty()) {
             return null;
         }

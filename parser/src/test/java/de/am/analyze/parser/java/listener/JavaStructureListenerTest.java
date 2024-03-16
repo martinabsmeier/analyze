@@ -16,7 +16,6 @@
 package de.am.analyze.parser.java.listener;
 
 import de.am.analyze.common.component.Component;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,46 +35,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class JavaStructureListenerTest extends AbstractListenerTest {
 
-    @Disabled
+    @Test
+    void checkNumberOfClasses() {
+        List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
+        assertEquals(7, classes.size(), "We expect seven classes.");
+    }
+
+    @Test
     void checkNumberOfInterfaces() {
         List<Component> interfaces = application.findAllComponentsByType(JAVA_INTERFACE);
         assertEquals(1, interfaces.size(), "We expect one interface.");
     }
 
-    @Disabled
+    @Test
     void checkNumberOfInterfaceMethods() {
         Component treeInterface = application.findComponentByUniqueCoordinate("java.structure.Tree");
         List<Component> treeInterfaceMethods = treeInterface.findChildrenByType(JAVA_METHOD);
         assertEquals(6, treeInterfaceMethods.size(), "We expect six methods.");
     }
 
-    @Disabled
-    void checkNumberOfClasses() {
-        List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
-        assertEquals(7, classes.size(), "We expect seven classes.");
-    }
-
-    @Disabled
+    @Test
     void checkNumberOfClassMethods() {
         Component oakTreeClass = application.findComponentByUniqueCoordinate("java.structure.OakTree");
         List<Component> oakTreeClassMethods = oakTreeClass.findChildrenByType(JAVA_METHOD);
         assertEquals(5, oakTreeClassMethods.size(), "We expect five methods.");
     }
 
-    @Disabled
+    @Test
     void checkNumberOfEnumerations() {
         List<Component> enumerations = application.findAllComponentsByType(JAVA_ENUM);
         assertEquals(1, enumerations.size(), "We expect one enumeration.");
     }
 
-    @Disabled
+    @Test
     void checkNumberOfEnumConstants() {
         Component enumeration = application.findAllComponentsByType(JAVA_ENUM).get(0);
         List<Component> enumConstants = enumeration.findChildrenByType(JAVA_ENUM_CONSTANT);
         assertEquals(5, enumConstants.size(), "We expect five enum constants.");
     }
 
-    @Disabled
+    @Test
     void checkNumberOfConstructors() {
         List<Component> constructors = application.findAllComponentsByType(JAVA_CONSTRUCTOR);
         assertEquals(7, constructors.size(), "We expect four constructors.");

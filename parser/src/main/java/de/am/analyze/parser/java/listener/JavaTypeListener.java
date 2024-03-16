@@ -16,7 +16,7 @@
 package de.am.analyze.parser.java.listener;
 
 import de.am.analyze.common.component.Component;
-import de.am.analyze.parser.common.type.BaseType;
+import de.am.analyze.parser.common.type.AbstractType;
 import de.am.analyze.generated.parser.java.JavaParser.*;
 import de.am.analyze.parser.java.JavaParsingContext;
 import de.am.analyze.parser.java.visitor.JavaTypeVisitor;
@@ -56,7 +56,7 @@ public class JavaTypeListener extends JavaBaseListener {
     @Override
     public void enterTypeType(TypeTypeContext ctx) {
         Component currentComponent = parsingContext.getCurrentComponent();
-        BaseType type = ctx.accept(typeVisitor);
+        AbstractType type = ctx.accept(typeVisitor);
 
         System.out.println("OK");
     }

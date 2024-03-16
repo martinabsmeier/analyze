@@ -16,7 +16,7 @@
 package de.am.analyze.parser.java.visitor;
 
 import de.am.analyze.parser.common.type.ArrayType;
-import de.am.analyze.parser.common.type.BaseType;
+import de.am.analyze.parser.common.type.AbstractType;
 import de.am.analyze.parser.common.type.PrimitiveType;
 import de.am.analyze.parser.common.type.VoidType;
 import de.am.analyze.parser.common.type.cache.TypeCache;
@@ -29,11 +29,11 @@ import de.am.analyze.parser.java.JavaParsingContext;
 import static java.util.Objects.nonNull;
 
 /**
- * {@code JavaTypeVisitor} is responsible for determining the types e.g. {@link BaseType}.
+ * {@code JavaTypeVisitor} is responsible for determining the types e.g. {@link AbstractType}.
  *
  * @author Ahmed Mian Syed
  */
-public class JavaTypeVisitor extends JavaBaseVisitor<BaseType> {
+public class JavaTypeVisitor extends JavaBaseVisitor<AbstractType> {
 
     private final TypeCache typeCache;
 
@@ -50,7 +50,7 @@ public class JavaTypeVisitor extends JavaBaseVisitor<BaseType> {
     // #################################################################################################################
 
     @Override
-    public BaseType visitTypeTypeOrVoid(TypeTypeOrVoidContext ctx) {
+    public AbstractType visitTypeTypeOrVoid(TypeTypeOrVoidContext ctx) {
         if (ctx.VOID() != null) {
             return typeCache.getType(new VoidType());
         }
@@ -58,8 +58,8 @@ public class JavaTypeVisitor extends JavaBaseVisitor<BaseType> {
     }
 
     @Override
-    public BaseType visitTypeType(TypeTypeContext ctx) {
-        BaseType baseType = null;
+    public AbstractType visitTypeType(TypeTypeContext ctx) {
+        AbstractType baseType = null;
 
         if (nonNull(ctx.classOrInterfaceType())) {
             baseType = ctx.classOrInterfaceType().accept(this);
@@ -76,8 +76,8 @@ public class JavaTypeVisitor extends JavaBaseVisitor<BaseType> {
     }
 
     @Override
-    public BaseType visitPrimitiveType(PrimitiveTypeContext ctx) {
-        BaseType typeCandidate = null;
+    public AbstractType visitPrimitiveType(PrimitiveTypeContext ctx) {
+        AbstractType typeCandidate = null;
 
         if (nonNull(ctx.BOOLEAN())) {
             typeCandidate = new PrimitiveType(PrimitiveTypeEnum.BOOLEAN);

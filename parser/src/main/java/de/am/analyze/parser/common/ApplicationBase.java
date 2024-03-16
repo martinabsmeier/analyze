@@ -23,6 +23,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static de.am.analyze.common.component.type.ComponentType.APP_ROOT;
 import static java.util.Objects.isNull;
@@ -33,12 +34,11 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Martin Absmeier
  */
+@Getter
 public abstract class ApplicationBase {
-    @Getter
-    private final Component components = Component.builder().type(APP_ROOT).value(APP_ROOT.name()).build();
-    @Getter
-    private final List<Component> libraries = new ArrayList<>();
 
+    private final Component components = Component.builder().type(APP_ROOT).value(APP_ROOT.name()).build();
+    private final List<Component> libraries = new ArrayList<>();
     private static final String PARAM_UNIQUE_COORDINATE_NOT_NULL = "Parameter 'uniqueCoordinate' must not be NULL.";
 
     // #################################################################################################################
@@ -52,17 +52,6 @@ public abstract class ApplicationBase {
      * @param target the component where data is written
      */
     public abstract void updateComponent(Component source, Component target);
-
-
-    /**
-     * Check if the specified {@code component} is visible from {@code visibleFrom} component.
-     *
-     * @param component         the component for which the test is carried out
-     * @param visibleFrom       the component from which the other is visible
-     * @param withinInheritance true if inheritance is to be taken into account, false otherwise
-     * @return true if {@code component} is visible from {@code visibleFrom} component, false otherwise
-     */
-    public abstract boolean isComponentVisible(Component component, Component visibleFrom, boolean withinInheritance);
 
     // #################################################################################################################
 
@@ -156,8 +145,10 @@ public abstract class ApplicationBase {
         requireNonNull(uniqueCoordinate, PARAM_UNIQUE_COORDINATE_NOT_NULL);
 
         return libraries.stream()
-            .map(library -> findComponentByUniqueCoordinate(library, uniqueCoordinate))
-            .findFirst().orElse(null);
+                .map(library -> findComponentByUniqueCoordinate(library, uniqueCoordinate))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     // #################################################################################################################

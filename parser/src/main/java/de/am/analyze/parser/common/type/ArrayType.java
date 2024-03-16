@@ -23,16 +23,15 @@ import static java.text.MessageFormat.format;
 import static java.util.Objects.isNull;
 
 /**
- * {@code BaseType} is the base class for all type representations.
+ * {@code AbstractType} is the base class for all type representations.
  *
  * @author Martin Absmeier
  */
+@Getter
 @EqualsAndHashCode(callSuper = true)
-public class ArrayType extends BaseType {
+public class ArrayType extends AbstractType {
 
-    @Getter
-    private final BaseType type;
-    @Getter
+    private final AbstractType type;
     private final int dimension;
 
     /**
@@ -41,7 +40,7 @@ public class ArrayType extends BaseType {
      * @param type      the type of the array
      * @param dimension the dimension of the array
      */
-    public ArrayType(BaseType type, int dimension) {
+    public ArrayType(AbstractType type, int dimension) {
         super(ARRAY);
         if (dimension <= 0) {
             throw new IllegalArgumentException("Dimension must be greater than zero.");
@@ -56,7 +55,7 @@ public class ArrayType extends BaseType {
     }
 
     @Override
-    public boolean canUpcast(BaseType type) {
+    public boolean canUpcast(AbstractType type) {
         if (isNull(type)) {
             return false;
         }

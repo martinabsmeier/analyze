@@ -22,15 +22,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * {@code BaseType} is the base class of all type representations.
+ * {@code AbstractType} is the base class of all type representations.
  *
  * @author Martin Absmeier
  */
-public abstract class BaseType {
+public abstract class AbstractType {
 
     private final BaseTypeEnum type;
 
-    protected BaseType(BaseTypeEnum type) {
+    protected AbstractType(BaseTypeEnum type) {
         this.type = type;
     }
 
@@ -50,7 +50,7 @@ public abstract class BaseType {
      * @param type the type to check
      * @return true if an upcast is possible false otherwise
      */
-    public abstract boolean canUpcast(BaseType type);
+    public abstract boolean canUpcast(AbstractType type);
 
     /**
      * Return the name of the type.
@@ -76,9 +76,9 @@ public abstract class BaseType {
      * recursive search. This method encapsulates this logic. For types that are not class, interface or generic types
      * an empty list is returned (implemented here)
      *
-     * @return the list with the {@link BaseType}
+     * @return the list with the {@link AbstractType}
      */
-    public List<BaseType> findAllImplementedClassesOrInterfaces() {
+    public List<AbstractType> findAllImplementedClassesOrInterfaces() {
         return Collections.emptyList();
     }
 

@@ -50,19 +50,31 @@ public class Component implements Serializable {
     private static final String PARAM_VALUE_NOT_NULL = "Parameter 'value' must not be NULL.";
     private static final String PARAM_TYPE_NOT_NULL = "Parameter 'type' must not be NULL.";
 
-    /** The parent of this component */
+    /**
+     * The parent of this component
+     */
     @EqualsAndHashCode.Exclude
     private Component parent;
-    /** The type of this component */
+    /**
+     * The type of this component
+     */
     private ComponentType type;
-    /** The value of this component */
+    /**
+     * The value of this component
+     */
     private String value;
-    /** The checksum of this component */
+    /**
+     * The checksum of this component
+     */
     private String checksum;
-    /** The children of this component */
+    /**
+     * The children of this component
+     */
     @EqualsAndHashCode.Exclude
     private List<Component> children;
-    /** The attributes of this component */
+    /**
+     * The attributes of this component
+     */
     @EqualsAndHashCode.Exclude
     private List<ComponentAttribute> attributes;
 

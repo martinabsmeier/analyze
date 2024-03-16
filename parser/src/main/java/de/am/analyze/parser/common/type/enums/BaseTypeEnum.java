@@ -15,11 +15,14 @@
  */
 package de.am.analyze.parser.common.type.enums;
 
+import lombok.Getter;
+
 /**
  * {@code BaseTypeEnum} is used to identify the characteristics of the base type.
  *
  * @author Martin Absmeier
  */
+@Getter
 public enum BaseTypeEnum {
     NULL("Null()"),
     VOID("Void()"),
@@ -33,9 +36,5 @@ public enum BaseTypeEnum {
 
     BaseTypeEnum(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 }

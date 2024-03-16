@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
  * @author Martin Absmeier
  */
 @EqualsAndHashCode(callSuper = true)
-public class PrimitiveType extends BaseType {
+public class PrimitiveType extends AbstractType {
 
     @Getter
     private final PrimitiveTypeEnum type;
@@ -51,7 +51,7 @@ public class PrimitiveType extends BaseType {
     }
 
     @Override
-    public boolean canUpcast(BaseType type) {
+    public boolean canUpcast(AbstractType type) {
         if (isNull(type)) {
             return false;
         }

@@ -594,7 +594,6 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
      */
     private boolean hasNoConstructor(Component component) {
         List<Component> constructors = component.findChildrenByType(JAVA_CONSTRUCTOR);
-        constructors.addAll(component.findChildrenByType(JAVA_CONSTRUCTOR));
         return constructors.isEmpty() && component.isType(JAVA_CLASS);
     }
 }

@@ -15,13 +15,14 @@
  */
 package de.am.analyze.parser.common.type.enums;
 
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * {@code PrimitiveType} represents a primitive types.
  *
  * @author Martin Absmeier
  */
+@Getter
 public enum PrimitiveTypeEnum {
 
     BOOLEAN("boolean"),
@@ -37,9 +38,5 @@ public enum PrimitiveTypeEnum {
 
     PrimitiveTypeEnum(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 }
