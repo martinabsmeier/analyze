@@ -396,8 +396,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
                 case JAVA_CLASS:
                     component.addAttribute(createAttribute(JAVA_MODIFIER, MODIFIER_PROTECTED));
                     break;
-                case JAVA_INTERFACE:
-                case JAVA_ENUM:
+                case JAVA_INTERFACE, JAVA_ENUM:
                     component.addAttribute(createAttribute(JAVA_MODIFIER, MODIFIER_PUBLIC));
                     break;
                 default:
