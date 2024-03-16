@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package java.structure;
+package java.structure.constructor;
 
 /**
  * Empty (default) constructor defined to check if no default constructor is generated
