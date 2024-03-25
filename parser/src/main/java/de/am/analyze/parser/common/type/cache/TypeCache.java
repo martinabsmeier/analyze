@@ -67,7 +67,7 @@ public class TypeCache {
             return null;
         }
 
-        String key = type.getUniqueIdentifier();
+        String key = type.getCoordinate();
         return cache.computeIfAbsent(key, value -> type);
     }
 

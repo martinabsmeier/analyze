@@ -19,16 +19,9 @@ import de.am.analyze.common.component.Component;
 import de.am.analyze.common.component.ComponentAttribute;
 import de.am.analyze.common.component.type.ComponentAttributeType;
 import de.am.analyze.common.component.type.ComponentType;
+import de.am.analyze.generated.parser.java.JavaParser.*;
 import de.am.analyze.parser.common.listener.ListenerBase;
 import de.am.analyze.generated.parser.java.JavaParser;
-import de.am.analyze.generated.parser.java.JavaParser.ClassDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.ClassOrInterfaceModifierContext;
-import de.am.analyze.generated.parser.java.JavaParser.CompilationUnitContext;
-import de.am.analyze.generated.parser.java.JavaParser.EnumDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.IdentifierContext;
-import de.am.analyze.generated.parser.java.JavaParser.ImportDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.PackageDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.TypeListContext;
 import de.am.analyze.generated.parser.java.JavaParserBaseListener;
 import de.am.analyze.parser.java.JavaApplication;
 import de.am.analyze.parser.java.JavaParsingContext;
@@ -196,10 +189,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
 
     @Override
     public void enterInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) {
-        // If we have no package add the default package
-        if (!parsingContext.hasPackage()) {
-            createAndSetDefaultPackage();
-        }
+        setDefaultPackageIfNecessary();
 
         Component newInterface = createComponent(JAVA_INTERFACE, ctx.identifier().getText());
         addCompilationUnitAttribute(newInterface);
@@ -222,9 +212,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     // Class
     @Override
     public void enterClassDeclaration(ClassDeclarationContext ctx) {
-        if (!parsingContext.hasPackage()) {
-            createAndSetDefaultPackage();
-        }
+        setDefaultPackageIfNecessary();
 
         Component newClass = createComponent(JAVA_CLASS, ctx.identifier().getText());
 
@@ -246,9 +234,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     // Enumerations
     @Override
     public void enterEnumDeclaration(EnumDeclarationContext ctx) {
-        if (!parsingContext.hasPackage()) {
-            createAndSetDefaultPackage();
-        }
+        setDefaultPackageIfNecessary();
 
         Component newEnum = createComponent(JAVA_ENUM, ctx.identifier().getText());
 
@@ -270,7 +256,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     // Constructor
 
     @Override
-    public void enterConstructorDeclaration(JavaParser.ConstructorDeclarationContext ctx) {
+    public void enterConstructorDeclaration(ConstructorDeclarationContext ctx) {
         Component newConstructor = createComponent(JAVA_CONSTRUCTOR, ctx.identifier().getText());
 
         addCompilationUnitAttribute(newConstructor);
@@ -282,7 +268,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     }
 
     @Override
-    public void exitConstructorDeclaration(JavaParser.ConstructorDeclarationContext ctx) {
+    public void exitConstructorDeclaration(ConstructorDeclarationContext ctx) {
         setParentIfAvailable();
     }
 
@@ -290,7 +276,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     // Default constructor
 
     @Override
-    public void exitClassBody(JavaParser.ClassBodyContext ctx) {
+    public void exitClassBody(ClassBodyContext ctx) {
         Component currentComponent = parsingContext.getCurrentComponent();
         // Add default constructor
         addDefaultConstructorIfNecessary(currentComponent);
@@ -300,7 +286,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     // Cleanup
 
     @Override
-    public void exitMemberDeclaration(JavaParser.MemberDeclarationContext ctx) {
+    public void exitMemberDeclaration(MemberDeclarationContext ctx) {
         // Class variables also have modifiers these are deleted here because they will only be processed later.
         collectedModifiers.clear();
     }
@@ -538,7 +524,16 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     }
 
     /**
-     * Creates and set the default package.
+     * Set the default package if component has no package.
+     */
+    private void setDefaultPackageIfNecessary() {
+        if (!parsingContext.hasPackage()) {
+            createAndSetDefaultPackage();
+        }
+    }
+
+    /**
+     * Creates and set the default package at {@link JavaStructureListener#parsingContext}.
      */
     private void createAndSetDefaultPackage() {
         Component defaultPackage = createComponent(JAVA_PACKAGE, DEFAULT_PACKAGE);

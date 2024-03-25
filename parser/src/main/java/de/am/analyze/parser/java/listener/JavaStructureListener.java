@@ -17,18 +17,13 @@ package de.am.analyze.parser.java.listener;
 
 import de.am.analyze.common.AnalyzeConstants.JAVA;
 import de.am.analyze.common.component.Component;
-import de.am.analyze.generated.parser.java.JavaParser.EnumConstantContext;
-import de.am.analyze.generated.parser.java.JavaParser.InterfaceCommonBodyDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.InterfaceMethodDeclarationContext;
-import de.am.analyze.generated.parser.java.JavaParser.InterfaceMethodModifierContext;
-import de.am.analyze.generated.parser.java.JavaParser.MethodDeclarationContext;
+import de.am.analyze.generated.parser.java.JavaParser.*;
 import de.am.analyze.parser.java.JavaParsingContext;
 
 import java.util.List;
 
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_MODIFIER;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_ENUM_CONSTANT;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_METHOD;
+import static de.am.analyze.common.component.type.ComponentType.*;
 
 /**
  * {@code JavaStructureListener} is responsible for building the basic structure consisting of classes, interfaces and
@@ -49,7 +44,7 @@ public class JavaStructureListener extends JavaBaseListener {
     }
 
     // #################################################################################################################
-    // Interface methods
+    // Methods
 
     @Override
     public void enterInterfaceMethodDeclaration(InterfaceMethodDeclarationContext ctx) {
@@ -67,9 +62,6 @@ public class JavaStructureListener extends JavaBaseListener {
     public void exitInterfaceMethodDeclaration(InterfaceMethodDeclarationContext ctx) {
         setParentIfAvailable();
     }
-
-    // #################################################################################################################
-    // Class methods
 
     @Override
     public void enterMethodDeclaration(MethodDeclarationContext ctx) {
@@ -105,11 +97,44 @@ public class JavaStructureListener extends JavaBaseListener {
     }
 
     // #################################################################################################################
-    private void addInterfaceModifiers(Component component, List<InterfaceMethodModifierContext> methodModifiers) {
-        if (methodModifiers.isEmpty()) {
+    // Fields and constants
+    @Override
+    public void enterFieldDeclaration(FieldDeclarationContext ctx) {
+        Component field = createComponent(JAVA_FIELD, ctx.variableDeclarators().getText());
+
+        addSourcePositionToComponentIfNotContained(field, ctx);
+        addToCurrentComponentIfNotContained(field);
+
+        parsingContext.setCurrentComponent(field);
+    }
+
+    @Override
+    public void exitFieldDeclaration(FieldDeclarationContext ctx) {
+        setParentIfAvailable();
+    }
+
+    @Override
+    public void enterConstantDeclarator(ConstantDeclaratorContext ctx) {
+        Component constant = createComponent(JAVA_FIELD, ctx.getText());
+
+        addSourcePositionToComponentIfNotContained(constant, ctx);
+        addToCurrentComponentIfNotContained(constant);
+
+        parsingContext.setCurrentComponent(constant);
+    }
+
+    @Override
+    public void exitConstantDeclarator(ConstantDeclaratorContext ctx) {
+        setParentIfAvailable();
+    }
+
+    // #################################################################################################################
+
+    private void addInterfaceModifiers(Component component, List<InterfaceMethodModifierContext> interfaceMethodModifiers) {
+        if (interfaceMethodModifiers.isEmpty()) {
             component.addAttribute(createAttribute(JAVA_MODIFIER, JAVA.MODIFIER_PUBLIC));
         } else {
-            methodModifiers.forEach(modifier -> addModifierToComponent(component, modifier.getText()));
+            interfaceMethodModifiers.forEach(modifier -> addModifierToComponent(component, modifier.getText()));
         }
     }
 }

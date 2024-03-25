@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Martin Absmeier
+ * Copyright 2022 Martin Absmeier
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.am.analyze.parser.common.type.enums;
+package java.structure;
 
-import lombok.Getter;
+import java.io.Serializable;
 
 /**
- * {@code PrimitiveType} represents a primitive types.
+ * Implementation of {@link Tree} interface used in JUnit test cases.
  *
  * @author Martin Absmeier
  */
-@Getter
-public enum PrimitiveTypeEnum {
+public class Constants {
 
-    BOOLEAN("boolean"),
-    DOUBLE("double"),
-    FLOAT("float"),
-    LONG("long"),
-    INT("integer"),
-    SHORT("short"),
-    CHAR("character"),
-    BYTE("byte");
+    public static final String STRING_A = "value";
+    public static final Integer INTEGER_A = 7;
+    private static final Integer CONSTANT_B = 7;
+    protected String lol;
+    Double resulz;
 
-    private final String name;
-
-    PrimitiveTypeEnum(String name) {
-        this.name = name;
-    }
 }

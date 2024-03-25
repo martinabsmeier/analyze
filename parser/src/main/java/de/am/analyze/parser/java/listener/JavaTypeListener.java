@@ -15,14 +15,9 @@
  */
 package de.am.analyze.parser.java.listener;
 
-import de.am.analyze.common.component.Component;
-import de.am.analyze.parser.common.type.AbstractType;
 import de.am.analyze.generated.parser.java.JavaParser.*;
 import de.am.analyze.parser.java.JavaParsingContext;
-import de.am.analyze.parser.java.visitor.JavaTypeVisitor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.List;
 
 /**
  * {@code JavaTypeListener} adds the variables, parameters and constants and there types to a compilation unit.
@@ -32,8 +27,6 @@ import java.util.List;
 @Log4j2
 public class JavaTypeListener extends JavaBaseListener {
 
-    private final JavaTypeVisitor typeVisitor;
-
     /**
      * Creates a new instance of {@code JavaListenerBase} class.
      *
@@ -41,45 +34,12 @@ public class JavaTypeListener extends JavaBaseListener {
      */
     public JavaTypeListener(String revisionId) {
         super(revisionId, JavaParsingContext.builder().revisionId(revisionId).build());
-        typeVisitor = new JavaTypeVisitor(parsingContext);
     }
 
     // #################################################################################################################
-    
-    @Override
-    public void enterTypeList(TypeListContext ctx) {
-        List<TypeTypeContext> typeList = ctx.typeType();
-
-        super.enterTypeList(ctx);
-    }
 
     @Override
     public void enterTypeType(TypeTypeContext ctx) {
-        Component currentComponent = parsingContext.getCurrentComponent();
-        AbstractType type = ctx.accept(typeVisitor);
-
-        // System.out.println("OK");
+        // FIXME Implement
     }
-
-    /*
-    @Override
-    public void enterFieldDeclaration(FieldDeclarationContext ctx) {
-        VariableDeclaratorsContext varDeclarators = ctx.variableDeclarators();
-        if (nonNull(varDeclarators)) {
-            varDeclarators.variableDeclarator().forEach(varDeclarator -> {
-                Component field = createComponent(JAVA_FIELD, varDeclarator.variableDeclaratorId().identifier().getText());
-
-                addAndClearCollectedModifiers(field);
-                addToCurrentComponentIfNotContained(field);
-
-                parsingContext.setCurrentComponent(field);
-            });
-        }
-    }
-
-    @Override
-    public void exitFieldDeclaration(FieldDeclarationContext ctx) {
-        setParentIfAvailable();
-    }
-     */
 }

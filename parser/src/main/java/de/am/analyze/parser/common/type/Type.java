@@ -15,29 +15,28 @@
  */
 package de.am.analyze.parser.common.type;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import lombok.Getter;
 
 /**
- * JUnit test cases of {@link VoidType} class.
+ * {@code Type} is used to identify the characteristics of the base type.
  *
  * @author Martin Absmeier
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class VoidTypeTest {
+@Getter
+public enum Type {
 
-    @Test
-    void getUniqueIdentifier() {
-        VoidType actual = new VoidType();
-        assertEquals("Void()", actual.getUniqueIdentifier());
-    }
+    BOOLEAN("boolean"),
+    BYTE("byte"),
+    SHORT("short"),
+    INT("int"),
+    LONG("long"),
+    CHAR("char"),
+    FLOAT("float"),
+    DOUBLE("double");
 
-    @Test
-    void canUpcastNull() {
-        VoidType actual = new VoidType();
-        assertFalse(actual.canUpcast(new NullType()));
+    private final String name;
+
+    Type(String name) {
+        this.name = name;
     }
 }

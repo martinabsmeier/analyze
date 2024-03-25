@@ -38,7 +38,7 @@ class JavaStructureListenerTest extends AbstractListenerTest {
     @Test
     void checkNumberOfClasses() {
         List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
-        assertEquals(7, classes.size(), "We expect seven classes.");
+        assertEquals(8, classes.size(), "We expect seven classes.");
     }
 
     @Test
@@ -77,6 +77,6 @@ class JavaStructureListenerTest extends AbstractListenerTest {
     @Test
     void checkNumberOfConstructors() {
         List<Component> constructors = application.findAllComponentsByType(JAVA_CONSTRUCTOR);
-        assertEquals(7, constructors.size(), "We expect four constructors.");
+        assertEquals(8, constructors.size(), "We expect four constructors.");
     }
 }

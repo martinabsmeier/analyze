@@ -16,7 +16,6 @@
 package de.am.analyze.parser.common.type;
 
 import de.am.analyze.common.component.Component;
-import de.am.analyze.parser.common.type.enums.BaseTypeEnum;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,35 +27,20 @@ import java.util.List;
  */
 public abstract class AbstractType {
 
-    private final BaseTypeEnum type;
+    private final Type type;
 
-    protected AbstractType(BaseTypeEnum type) {
+    protected AbstractType(Type type) {
         this.type = type;
     }
 
     // #################################################################################################################
 
-    /**
-     * Convert SourceType structure into one normalized string representation.
-     * TODO Add documentation
-     *
-     * @return the unique type identifier
-     */
-    public abstract String getUniqueIdentifier();
+    public abstract String getCoordinate();
 
-    /**
-     * Checks if an upcast to type specified by {@code type} is possible.
-     *
-     * @param type the type to check
-     * @return true if an upcast is possible false otherwise
-     */
+    public abstract boolean isPrimitive();
+
     public abstract boolean canUpcast(AbstractType type);
 
-    /**
-     * Return the name of the type.
-     *
-     * @return the name of the type
-     */
     public abstract String getName();
 
     // #################################################################################################################
@@ -66,30 +50,8 @@ public abstract class AbstractType {
      *
      * @return the base type
      */
-    public BaseTypeEnum getBaseType() {
+    public Type getType() {
         return type;
     }
 
-    /**
-     * For template parameters we may need complex logic to find out all class or interface types that the template
-     * parameter implements. We may even see cases where a template parameter implements a different one, this requiring
-     * recursive search. This method encapsulates this logic. For types that are not class, interface or generic types
-     * an empty list is returned (implemented here)
-     *
-     * @return the list with the {@link AbstractType}
-     */
-    public List<AbstractType> findAllImplementedClassesOrInterfaces() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Return the related component.<br>
-     * For determining the type during graph creation we need to be able to convert a base type into its contained
-     * component in order to search onwards from there.
-     *
-     * @return the related component or NULL if no one is found
-     */
-    public Component getRelatedComponent() {
-        return null;
-    }
 }
