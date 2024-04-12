@@ -22,10 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_PACKAGE_NAME;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_CLASS;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_ENUM;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_INTERFACE;
-import static de.am.analyze.common.component.type.ComponentType.JAVA_METHOD;
+import static de.am.analyze.common.component.type.ComponentType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -192,17 +189,17 @@ class ComponentTest {
     @Test
     void getCoordinate() {
         Component aClass = Component.builder().type(JAVA_CLASS).value("Component").build();
-        Component aMethod = Component.builder().type(JAVA_METHOD).value("getCoordinate").build();
+        Component aMethod = Component.builder().type(JAVA_METHOD).value("getUniqueCoordinate").build();
         aClass.addChild(aMethod);
-        Component pck4 = Component.builder().type(JAVA_METHOD).value("common").build();
+        Component pck4 = Component.builder().type(JAVA_PACKAGE).value("common").build();
         pck4.addChild(aClass);
-        Component pck3 = Component.builder().type(JAVA_METHOD).value("analyze").build();
+        Component pck3 = Component.builder().type(JAVA_PACKAGE).value("analyze").build();
         pck3.addChild(pck4);
-        Component pck2 = Component.builder().type(JAVA_METHOD).value("am").build();
+        Component pck2 = Component.builder().type(JAVA_PACKAGE).value("am").build();
         pck2.addChild(pck3);
-        Component pck1 = Component.builder().type(JAVA_METHOD).value("de").build();
+        Component pck1 = Component.builder().type(JAVA_PACKAGE).value("de").build();
         pck1.addChild(pck2);
 
-        assertEquals("de.am.analyze.common.Component.getCoordinate", aMethod.getCoordinate());
+        assertEquals("de.am.analyze.common.Component.getUniqueCoordinate", aMethod.getUniqueCoordinate());
     }
 }

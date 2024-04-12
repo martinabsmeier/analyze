@@ -146,7 +146,7 @@ public class ParsingContextBase {
     @Override
     public String toString() {
         String currentFileTxt = isNull(currentFile) ? "" : currentFile.getValue();
-        String currentComponentTxt = isNull(currentComponent) ? "" : currentComponent.getCoordinate();
+        String currentComponentTxt = isNull(currentComponent) ? "" : currentComponent.getUniqueCoordinate();
         return format("FILE: {0} | CURR-CMP: {1}", currentFileTxt, currentComponentTxt);
     }
 }

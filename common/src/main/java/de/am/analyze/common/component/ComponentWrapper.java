@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * {@code ComponentWrapper} overwrites the method {@link Component#equals(Object)} and {@link Component#hashCode()} of
- * {@link Component} because it has to be compared with the {@link Component#getCoordinate()} and not with the name.
+ * {@link Component} because it has to be compared with the {@link Component#getUniqueCoordinate()} and not with the name.
  *
  * @author Martin Absmeier
  */
@@ -57,16 +57,16 @@ public class ComponentWrapper implements Serializable {
             return false;
         }
         ComponentWrapper otherComponent = (ComponentWrapper) other;
-        return Objects.equals(component.getCoordinate(), otherComponent.component.getCoordinate());
+        return Objects.equals(component.getUniqueCoordinate(), otherComponent.component.getUniqueCoordinate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(component.getCoordinate());
+        return Objects.hash(component.getUniqueCoordinate());
     }
 
     @Override
     public String toString() {
-        return component.getCoordinate();
+        return component.getUniqueCoordinate();
     }
 }

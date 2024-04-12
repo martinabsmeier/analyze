@@ -15,7 +15,7 @@
  */
 package de.am.analyze.common.component;
 
-import de.am.analyze.common.AnalyzeConstants.COMMON;
+import de.am.analyze.common.AnalyzeConstants.JAVA;
 import de.am.analyze.common.component.type.ComponentAttributeType;
 import de.am.analyze.common.component.type.ComponentType;
 import lombok.Builder;
@@ -327,12 +327,12 @@ public class Component implements Serializable {
      *
      * @return the coordinate of this component
      */
-    public String getCoordinate() {
+    public String getUniqueCoordinate() {
         String coordinate = getValue();
 
         if (hasParentAndParentIsNotRoot()) {
-            return getParent().getCoordinate()
-                    .concat(COMMON.DELIMITER)
+            return getParent().getUniqueCoordinate()
+                    .concat(JAVA.DELIMITER)
                     .concat(coordinate);
         }
 

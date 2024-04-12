@@ -23,7 +23,7 @@ class CoordinateTest extends AbstractListenerTest {
         System.out.println(SEPARATOR);
         List<Component> classes = application.findAllComponentsByType(JAVA_CLASS);
         classes.stream()
-                .map(Component::getCoordinate)
+                .map(Component::getUniqueCoordinate)
                 .forEach(System.out::println);
         assertTrue(true);
     }
@@ -35,7 +35,7 @@ class CoordinateTest extends AbstractListenerTest {
         System.out.println(SEPARATOR);
         List<Component> interfaces = application.findAllComponentsByType(JAVA_INTERFACE);
         interfaces.stream()
-                .map(Component::getCoordinate)
+                .map(Component::getUniqueCoordinate)
                 .forEach(System.out::println);
         assertTrue(true);
     }
@@ -47,7 +47,7 @@ class CoordinateTest extends AbstractListenerTest {
         System.out.println(SEPARATOR);
         List<Component> enumerations = application.findAllComponentsByType(JAVA_ENUM);
         enumerations.stream()
-                .map(Component::getCoordinate)
+                .map(Component::getUniqueCoordinate)
                 .forEach(System.out::println);
         assertTrue(true);
     }

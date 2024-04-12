@@ -65,5 +65,6 @@ public class JavaApplication extends ApplicationBase {
 
     // #################################################################################################################
     private JavaApplication() {
+        // It's a singleton
     }
 }

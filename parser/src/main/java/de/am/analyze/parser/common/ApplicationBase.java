@@ -15,8 +15,6 @@
  */
 package de.am.analyze.parser.common;
 
-import de.am.analyze.common.AnalyzeConstants.COMMON;
-import de.am.analyze.common.AnalyzeConstants.DEFAULT;
 import de.am.analyze.common.component.Component;
 import de.am.analyze.common.component.type.ComponentType;
 import lombok.Getter;
@@ -25,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static de.am.analyze.common.AnalyzeConstants.*;
 import static de.am.analyze.common.component.type.ComponentType.APP_ROOT;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -68,7 +67,7 @@ public abstract class ApplicationBase {
         String uniqueCoordinate = component.getValue();
         if (component.hasParentAndParentIsNotRoot()) {
             uniqueCoordinate = getParamUniqueCoordinate(component.getParent())
-                    .concat(DEFAULT.UNIQUE_COORDINATE_DELIMITER)
+                    .concat(JAVA.DELIMITER)
                     .concat(uniqueCoordinate);
         }
 
@@ -182,8 +181,8 @@ public abstract class ApplicationBase {
      * @return the component or [NULL] if no one is found
      */
     private Component findComponentByUniqueCoordinate(Component component, String coordinate) {
-        if (coordinate.contains(DEFAULT.UNIQUE_COORDINATE_DELIMITER)) {
-            String[] values = coordinate.split(COMMON.DELIMITER_REGEX);
+        if (coordinate.contains(JAVA.DELIMITER)) {
+            String[] values = coordinate.split(JAVA.DELIMITER_REGEX);
             for (String value : values) {
                 component = component.findChildByCoordinate(value);
                 if (isNull(component)) {

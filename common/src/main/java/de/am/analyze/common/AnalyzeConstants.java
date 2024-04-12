@@ -36,12 +36,6 @@ public class AnalyzeConstants {
         /** The home directory of the application */
         public static final String USER_HOME_DIR = System.getProperty("user.home");
 
-        /** The default delimiter. */
-        public static final String DELIMITER = ".";
-
-        /** The regular expression to detect the delimiter. */
-        public static final String DELIMITER_REGEX = "[.]";
-
         private COMMON() {
             // We do not want an instance
         }
@@ -60,9 +54,6 @@ public class AnalyzeConstants {
         /** The default revision id if there is no one. */
         public static final String REVISION_ID = "v-0.0.1";
 
-        /** The default delimiter of the unique coordinate. */
-        public static final String UNIQUE_COORDINATE_DELIMITER = ".";
-
         private DEFAULT() {
             // We do not want an instance
         }
@@ -72,6 +63,14 @@ public class AnalyzeConstants {
 
     /** Contains all java constants */
     public static class JAVA {
+
+        /** The default delimiter of the unique coordinate. */
+        public static final String DELIMITER = ".";
+
+        /** The regular expression to detect the delimiter. */
+        public static final String DELIMITER_REGEX = "[.]";
+
+
         /** The default package if no package is specified. */
         public static final String DEFAULT_PACKAGE = "default";
 

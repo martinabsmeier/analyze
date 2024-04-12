@@ -79,7 +79,7 @@
                 </executions>
                 <configuration>
                     <listener>true</listener>
-                    <visitor>false</visitor>
+                    <visitor>true</visitor>
                 </configuration>
             </plugin>
         </plugins>

@@ -68,6 +68,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Log4j2
 public abstract class JavaBaseListener extends JavaParserBaseListener implements ListenerBase {
+
     protected JavaApplication application;
     protected JavaParsingContext parsingContext;
     protected String sourceName;
@@ -140,7 +141,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
         parsingContext.hasPackage(true);
         parsingContext.setCurrentComponent(currentComponent);
 
-        String uniquePackageName = currentComponent.getCoordinate();
+        String uniquePackageName = currentComponent.getUniqueCoordinate();
         Component component = application.findApplicationComponentByUniqueCoordinate(uniquePackageName);
         if (nonNull(component)) {
             parsingContext.addComponentWithVisibleChildren(component);
@@ -185,7 +186,7 @@ public abstract class JavaBaseListener extends JavaParserBaseListener implements
     }
 
     // #################################################################################################################
-    // Interface
+    // 
 
     @Override
     public void enterInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) {
