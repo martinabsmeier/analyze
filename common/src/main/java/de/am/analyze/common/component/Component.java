@@ -29,9 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.am.analyze.common.component.type.ComponentType.APP_ROOT;
-import static de.am.analyze.common.component.type.ComponentType.LIB_ROOT;
-import static de.am.analyze.common.component.type.ComponentType.ROOT;
+import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_RETURN_TYPE;
+import static de.am.analyze.common.component.type.ComponentType.*;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
@@ -378,5 +377,20 @@ public class Component implements Serializable {
             return findParentByType(parentOfComponent, type);
         }
         return null;
+    }
+
+    private boolean isMethod() {
+        return JAVA_METHOD.equals(getType());
+    }
+
+    private boolean hasReturnType() {
+        return nonNull(getReturnType());
+    }
+
+    private ComponentAttribute getReturnType() {
+        return getAttributes().stream()
+                .filter(att -> JAVA_RETURN_TYPE.equals(att.getType()))
+                .findFirst()
+                .orElse(null);
     }
 }

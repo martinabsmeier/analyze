@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static de.am.analyze.common.component.type.ComponentAttributeType.JAVA_PACKAGE_NAME;
+import static de.am.analyze.common.component.type.ComponentAttributeType.*;
 import static de.am.analyze.common.component.type.ComponentType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -188,18 +188,32 @@ class ComponentTest {
 
     @Test
     void getCoordinate() {
-        Component aClass = Component.builder().type(JAVA_CLASS).value("Component").build();
-        Component aMethod = Component.builder().type(JAVA_METHOD).value("getUniqueCoordinate").build();
-        aClass.addChild(aMethod);
-        Component pck4 = Component.builder().type(JAVA_PACKAGE).value("common").build();
-        pck4.addChild(aClass);
-        Component pck3 = Component.builder().type(JAVA_PACKAGE).value("analyze").build();
+        Component method = Component.builder().type(JAVA_METHOD).value("getUniqueCoordinate").build();
+        method.addAttribute(ComponentAttribute.builder().type(JAVA_RETURN_TYPE).value("String").build());
+        method.addChild(Component.builder().type(JAVA_PARAMETER).value("").build());
+        Component parameter = Component.builder().type(JAVA_PARAMETER).value("arg0").build();
+        parameter.addAttribute(ComponentAttribute.builder().type(JAVA_TYPE).value("Integer").build());
+        method.addChild(parameter);
+
+        Component clazz = Component.builder().type(JAVA_CLASS).value("Component").build();
+        clazz.addChild(method);
+
+        Component pck4 = createJavaPackage("common");
+        pck4.addChild(clazz);
+        Component pck3 = createJavaPackage("analyze");
         pck3.addChild(pck4);
-        Component pck2 = Component.builder().type(JAVA_PACKAGE).value("am").build();
+        Component pck2 = createJavaPackage("am");
         pck2.addChild(pck3);
-        Component pck1 = Component.builder().type(JAVA_PACKAGE).value("de").build();
+        Component pck1 = createJavaPackage("de");
         pck1.addChild(pck2);
 
-        assertEquals("de.am.analyze.common.Component.getUniqueCoordinate", aMethod.getUniqueCoordinate());
+        System.out.println(method.getUniqueCoordinate());
+
+        assertEquals("de.am.analyze.common.Component.getUniqueCoordinate", method.getUniqueCoordinate());
+    }
+
+    // #################################################################################################################
+    private Component createJavaPackage(String value) {
+        return Component.builder().type(JAVA_PACKAGE).value(value).build();
     }
 }
