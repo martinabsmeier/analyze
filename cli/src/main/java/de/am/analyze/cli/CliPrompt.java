@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Martin Absmeier
+ * Copyright 2024 Martin Absmeier
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.am.analyze;
+package de.am.analyze.cli;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
+import org.springframework.shell.jline.PromptProvider;
+import org.springframework.stereotype.Component;
 
 /**
- * JUnit test cases of {@link AnalyzerApplication} class.
- *
+ * The prompt provider class of analyzer application shell.
+ * exit
  * @author Martin Absmeier
  */
-@SpringBootTest
-class AnalyzerApplicationTest {
+@Component
+public class CliPrompt implements PromptProvider {
 
-    @Test
-    void contextLoads(ApplicationContext context) {
-        Assertions.assertNotNull(context);
+    @Override
+    public AttributedString getPrompt() {
+        return new AttributedString("Analyzer > ", AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
     }
 }

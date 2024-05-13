@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Martin Absmeier
+ * Copyright 2024 Martin Absmeier
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.am.analyze;
+package de.am.analyze.cli;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.jline.terminal.Terminal;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 /**
- * JUnit test cases of {@link AnalyzerApplication} class.
- *
  * @author Martin Absmeier
  */
-@SpringBootTest
-class AnalyzerApplicationTest {
+@Configuration
+public class CliConfiguration {
 
-    @Test
-    void contextLoads(ApplicationContext context) {
-        Assertions.assertNotNull(context);
+    @Bean
+    public CliTerminal createAnalyzerCliTerminal(@Lazy Terminal terminal) {
+        return CliTerminal.builder().terminal(terminal).build();
     }
 }
