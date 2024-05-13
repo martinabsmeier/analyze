@@ -11,8 +11,9 @@ function copy_file() {
 }
 
 function execute_file() {
+  echo ""
   echo "Execute script: $1"
-  docker exec -it postgres psql -U postgres -a analyze -f dropAndCreateDb.sql
+  docker exec -it postgres psql -U postgres -a analyze -f "$1"
 }
 
 echo "Execute 'init_postgres.sh' script"
@@ -33,3 +34,5 @@ copy_file 'dropAndCreateIndexes.sql'
 echo ""
 echo "Execute scripts:"
 execute_file 'dropAndCreateDb.sql'
+execute_file 'dropAndCreateTables.sql'
+execute_file 'dropAndCreateIndexes.sql'

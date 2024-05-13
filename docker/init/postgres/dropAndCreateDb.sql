@@ -16,8 +16,3 @@ CREATE DATABASE analyze WITH
 -- ---------------------------------------------------------------------------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS public AUTHORIZATION postgres;
 SET search_path TO public;
-
--- EXECUTE SCRIPTS
--- ---------------------------------------------------------------------------------------------------------------------
-\i dropAnCreateTable.sql
-\i dropAnCreateIndex.sql
