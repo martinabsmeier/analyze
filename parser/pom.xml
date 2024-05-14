@@ -5,19 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>de.am.analyze</groupId>
+        <artifactId>analyze-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>de.am.analyze</groupId>
     <artifactId>analyze-parser</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>analyze-parser</name>
-    <description>parser</description>
+    <description>Parser package of analyzer application</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
