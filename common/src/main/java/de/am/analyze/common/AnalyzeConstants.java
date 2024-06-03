@@ -34,7 +34,7 @@ public class AnalyzeConstants {
         public static final String USER_DIR = System.getProperty("user.dir");
 
         /** The home directory of the application */
-        public static final String USER_HOME_DIR = System.getProperty("user.home");
+        public static final String HOME_DIR = System.getProperty("user.home");
 
         private COMMON() {
             // We do not want an instance
@@ -69,7 +69,6 @@ public class AnalyzeConstants {
 
         /** The regular expression to detect the delimiter. */
         public static final String DELIMITER_REGEX = "[.]";
-
 
         /** The default package if no package is specified. */
         public static final String DEFAULT_PACKAGE = "default";

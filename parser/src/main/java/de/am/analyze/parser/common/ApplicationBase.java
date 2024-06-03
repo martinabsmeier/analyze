@@ -117,6 +117,7 @@ public abstract class ApplicationBase {
         if (isNull(component)) {
             component = findLibraryComponentByUniqueCoordinate(uniqueCoordinate);
         }
+
         return component;
     }
 
@@ -192,6 +193,7 @@ public abstract class ApplicationBase {
         } else {
             component = component.findChildByCoordinate(coordinate);
         }
+
         return component;
     }
 }

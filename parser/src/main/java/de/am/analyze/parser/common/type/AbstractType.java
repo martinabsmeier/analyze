@@ -15,11 +15,6 @@
  */
 package de.am.analyze.parser.common.type;
 
-import de.am.analyze.common.component.Component;
-
-import java.util.Collections;
-import java.util.List;
-
 /**
  * {@code AbstractType} is the base class of all type representations.
  *
