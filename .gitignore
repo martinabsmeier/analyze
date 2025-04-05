@@ -4,9 +4,6 @@
 # Log file
 *.log
 
-# BlueJ files
-*.ctxt
-
 # Package Files #
 *.jar
 *.war
@@ -21,4 +18,5 @@ hs_err_pid*
 replay_pid*
 
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
+.idea
+/target/
