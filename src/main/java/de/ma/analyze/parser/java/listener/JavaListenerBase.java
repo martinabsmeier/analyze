@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.*;
 
@@ -45,6 +46,17 @@ import static java.util.Objects.*;
  */
 @Log4j2
 public abstract class JavaListenerBase extends JavaParserBaseListener implements ListenerBase {
+
+    private static final Map<String, String> MODIFIER_MAP = Map.ofEntries(
+            Map.entry("public", JAVA.MODIFIER_PUBLIC),
+            Map.entry("protected", JAVA.MODIFIER_PROTECTED),
+            Map.entry("private", JAVA.MODIFIER_PRIVATE),
+            Map.entry("static", JAVA.MODIFIER_STATIC),
+            Map.entry("final", JAVA.MODIFIER_FINAL),
+            Map.entry("native", JAVA.MODIFIER_NATIVE),
+            Map.entry("abstract", JAVA.MODIFIER_ABSTRACT),
+            Map.entry("default", JAVA.MODIFIER_DEFAULT)
+    );
 
     protected JavaApplication application;
     protected JavaParsingContext parsingContext;
@@ -163,22 +175,53 @@ public abstract class JavaListenerBase extends JavaParserBaseListener implements
     }
 
     // #################################################################################################################
-    //
+    // Type Declaration Handling (Class, Interface, Enum)
+
+    /**
+     * Handles entry into type declarations (class, interface, enum).
+     * Extracts common logic that applies to all type declarations.
+     *
+     * @param componentType the type of component being declared
+     * @param identifier    the identifier context containing the component name
+     * @param ctx           the parser rule context for source position
+     * @param heritage      optional heritage (extends) list for interfaces
+     */
+    private void enterTypeDeclaration(ComponentType componentType, JavaParser.IdentifierContext identifier,
+                                      ParserRuleContext ctx, List<String> heritage) {
+        setDefaultPackageIfNecessary();
+
+        Component newComponent = createComponent(componentType, identifier.getText());
+        applyTypeDeclarationAttributes(newComponent, ctx);
+
+        if (heritage != null && !heritage.isEmpty()) {
+            heritage.forEach(extendName ->
+                    newComponent.addAttribute(createAttribute(ComponentAttributeType.JAVA_EXTENDS, extendName)));
+        }
+
+        parsingContext.setCurrentComponent(newComponent);
+    }
+
+    /**
+     * Applies common attributes to type declarations.
+     *
+     * @param component the component to configure
+     * @param ctx       the parser context for source position
+     */
+    private void applyTypeDeclarationAttributes(Component component, ParserRuleContext ctx) {
+        addCompilationUnitAttribute(component);
+        addSourcePositionToComponentIfNotContained(component, ctx);
+        addImportsToComponent(component);
+        addAndClearCollectedModifiers(component);
+        addToCurrentComponentIfNotContained(component);
+    }
+
+    // #################################################################################################################
+    // Interface
 
     @Override
     public void enterInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) {
-        setDefaultPackageIfNecessary();
-
-        Component newInterface = createComponent(ComponentType.JAVA_INTERFACE, ctx.identifier().getText());
-        addCompilationUnitAttribute(newInterface);
-        addSourcePositionToComponentIfNotContained(newInterface, ctx);
-        addImportsToComponent(newInterface);
-        addAndClearCollectedModifiers(newInterface);
-        addToCurrentComponentIfNotContained(newInterface);
         List<String> extendList = getInheritanceIfPresent(ctx.EXTENDS(), ctx.typeList());
-        extendList.forEach(extendName -> newInterface.addAttribute(createAttribute(ComponentAttributeType.JAVA_EXTENDS, extendName)));
-
-        parsingContext.setCurrentComponent(newInterface);
+        enterTypeDeclaration(ComponentType.JAVA_INTERFACE, ctx.identifier(), ctx, extendList);
     }
 
     @Override
@@ -188,19 +231,10 @@ public abstract class JavaListenerBase extends JavaParserBaseListener implements
 
     // #################################################################################################################
     // Class
+
     @Override
     public void enterClassDeclaration(JavaParser.ClassDeclarationContext ctx) {
-        setDefaultPackageIfNecessary();
-
-        Component newClass = createComponent(ComponentType.JAVA_CLASS, ctx.identifier().getText());
-
-        addCompilationUnitAttribute(newClass);
-        addSourcePositionToComponentIfNotContained(newClass, ctx);
-        addImportsToComponent(newClass);
-        addAndClearCollectedModifiers(newClass);
-        addToCurrentComponentIfNotContained(newClass);
-
-        parsingContext.setCurrentComponent(newClass);
+        enterTypeDeclaration(ComponentType.JAVA_CLASS, ctx.identifier(), ctx, null);
     }
 
     @Override
@@ -209,20 +243,11 @@ public abstract class JavaListenerBase extends JavaParserBaseListener implements
     }
 
     // #################################################################################################################
-    // Enumerations
+    // Enumeration
+
     @Override
     public void enterEnumDeclaration(JavaParser.EnumDeclarationContext ctx) {
-        setDefaultPackageIfNecessary();
-
-        Component newEnum = createComponent(ComponentType.JAVA_ENUM, ctx.identifier().getText());
-
-        addCompilationUnitAttribute(newEnum);
-        addSourcePositionToComponentIfNotContained(newEnum, ctx);
-        addImportsToComponent(newEnum);
-        addAndClearCollectedModifiers(newEnum);
-        addToCurrentComponentIfNotContained(newEnum);
-
-        parsingContext.setCurrentComponent(newEnum);
+        enterTypeDeclaration(ComponentType.JAVA_ENUM, ctx.identifier(), ctx, null);
     }
 
     @Override
@@ -414,45 +439,18 @@ public abstract class JavaListenerBase extends JavaParserBaseListener implements
     // #################################################################################################################
 
     /**
-     * Determines and maps the modifier to one of the constants.<br/>
-     * - {@link JAVA#MODIFIER_PUBLIC}<br/>
-     * - {@link JAVA#MODIFIER_PROTECTED}<br/>
-     * - {@link JAVA#MODIFIER_PRIVATE}<br/>
-     * - {@link JAVA#MODIFIER_STATIC}<br/>
-     * - {@link JAVA#MODIFIER_FINAL}<br/>
-     * - {@link JAVA#MODIFIER_NATIVE}<br/>
-     * - {@link JAVA#MODIFIER_DEFAULT}
+     * Determines and maps the modifier to one of the known constants.
      *
      * @param modifier the modifier to map
-     * @return the mapped modifier
+     * @return the mapped modifier, or "unknown(modifier)" if not recognized
      */
     private String determineModifier(String modifier) {
-        if (nonNull(modifier)) {
-            modifier = modifier.trim();
+        if (isNull(modifier)) {
+            return "unknown";
         }
 
-        String result = "unknown";
-        if (JAVA.MODIFIER_PUBLIC.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_PUBLIC;
-        } else if (JAVA.MODIFIER_ABSTRACT.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_ABSTRACT;
-        } else if (JAVA.MODIFIER_PROTECTED.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_PROTECTED;
-        } else if (JAVA.MODIFIER_PRIVATE.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_PRIVATE;
-        } else if (JAVA.MODIFIER_STATIC.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_STATIC;
-        } else if (JAVA.MODIFIER_FINAL.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_FINAL;
-        } else if (JAVA.MODIFIER_NATIVE.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_NATIVE;
-        } else if (JAVA.MODIFIER_DEFAULT.equalsIgnoreCase(modifier)) {
-            result = JAVA.MODIFIER_DEFAULT;
-        } else {
-            result = result.concat("(").concat(modifier).concat(")");
-        }
-
-        return result;
+        String trimmed = modifier.trim().toLowerCase();
+        return MODIFIER_MAP.getOrDefault(trimmed, "unknown(" + modifier + ")");
     }
 
     /**

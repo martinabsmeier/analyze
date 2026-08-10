@@ -27,6 +27,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.ma.analyze.common.component.type.ComponentType.*;
@@ -93,6 +94,37 @@ public class Component implements Serializable {
     }
 
     // #################################################################################################################
+    // Generic search methods using Predicates (DRY principle)
+
+    /**
+     * Finds all children matching the specified filter predicate.
+     *
+     * @param filter the filter predicate to apply
+     * @return list of matching children, or empty list if none match
+     */
+    public List<Component> findChildren(Predicate<Component> filter) {
+        requireNonNull(filter, "Parameter 'filter' must not be NULL.");
+        return children.stream()
+                .filter(filter)
+                .toList();
+    }
+
+    /**
+     * Finds the first child matching the specified filter predicate.
+     *
+     * @param filter the filter predicate to apply
+     * @return the matching child or NULL if no match found
+     */
+    public Component findChild(Predicate<Component> filter) {
+        requireNonNull(filter, "Parameter 'filter' must not be NULL.");
+        return children.stream()
+                .filter(filter)
+                .findFirst()
+                .orElse(null);
+    }
+
+    // #################################################################################################################
+    // Convenience methods for common queries
 
     /**
      * Add a child specified by {@code child} to the {@link Component}.
@@ -114,35 +146,25 @@ public class Component implements Serializable {
      */
     public List<Component> findChildrenByValue(String value) {
         requireNonNull(value, PARAM_VALUE_NOT_NULL);
-
-        return children.stream()
-                .filter(child -> value.equals(child.getValue()))
-                .toList();
+        return findChildren(child -> value.equals(child.getValue()));
     }
 
     /**
      * Retrieves the child specified by {@code coordinate} from this component.
+     * If this component has a checksum and coordinate contains '#', matches with checksum.
+     * Otherwise, matches by value alone.
      *
      * @param coordinate the coordinate of the child
      * @return the child of the component or NULL if no one is found
      */
     public Component findChildByCoordinate(String coordinate) {
         requireNonNull(coordinate, "Parameter 'coordinate' must not be NULL.");
-
-        return children.stream()
-                .filter(child -> {
-                    // Added: if we are not looking for something including the # sign we also only look at
-                    // the value and not the value concatenated with # and the checksum
-                    if (hasChecksum() && coordinate.contains("#")) {
-                        return coordinate.equals(child.getValue()
-                                .concat("#")
-                                .concat(child.getChecksum()));
-                    } else {
-                        return coordinate.equals(child.getValue());
-                    }
-                })
-                .findFirst()
-                .orElse(null);
+        return findChild(child -> {
+            if (child.hasChecksum() && coordinate.contains("#")) {
+                return coordinate.equals(child.getValue() + "#" + child.getChecksum());
+            }
+            return coordinate.equals(child.getValue());
+        });
     }
 
     /**
@@ -153,10 +175,7 @@ public class Component implements Serializable {
      */
     public List<Component> findChildrenByType(ComponentType type) {
         requireNonNull(type, PARAM_TYPE_NOT_NULL);
-
-        return getChildren().stream()
-                .filter(child -> child.isType(type))
-                .toList();
+        return findChildren(child -> child.isType(type));
     }
 
     /**
@@ -167,11 +186,7 @@ public class Component implements Serializable {
      */
     public Component findChildByComponent(Component component) {
         requireNonNull(component, "Parameter 'component' must not be NULL.");
-
-        return children.stream()
-                .filter(child -> child.equals(component))
-                .findFirst()
-                .orElse(null);
+        return findChild(child -> child.equals(component));
     }
 
     /**
@@ -330,8 +345,8 @@ public class Component implements Serializable {
 
         if (hasParentAndParentIsNotRoot()) {
             return getParent().getUniqueCoordinate()
-                    .concat(AnalyzeConstants.JAVA.DELIMITER)
-                    .concat(coordinate);
+                    + AnalyzeConstants.JAVA.DELIMITER
+                    + coordinate;
         }
 
         return coordinate;
